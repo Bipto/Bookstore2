@@ -1,0 +1,27 @@
+services:
+
+  apache:
+    build:
+      context: ./apache
+    container_name: multidomain-apache
+    ports:
+      - "80:80"
+    volumes:
+      - ./src/php/sites:/var/www/sites
+      - ./src/php/shared:/var/www/shared
+    depends_on:
+      - php
+    networks:
+      - web
+
+  php:
+    image: php:8.5-fpm
+    container_name: multidomain-php
+    volumes:
+      - ./src/php/sites:/var/www/sites
+      - ./src/php/shared:/var/www/shared
+    networks:
+      - web
+
+networks:
+  web:
