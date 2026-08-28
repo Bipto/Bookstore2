@@ -35,7 +35,7 @@ services:
     volumes:
       - ./src/sites/main/php:/var/www/sites/main:ro
       - ./src/shared/php:/var/www/shared:ro
-      - ./php/main/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+      - ./src/sites/main/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
 
     cpus: "0.50"
     mem_limit: 512m
@@ -54,7 +54,7 @@ services:
     volumes:
       - ./src/sites/admin/php:/var/www/sites/admin:ro
       - ./src/shared/php:/var/www/shared:ro
-      - ./php/admin/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+      - ./src/sites/admin/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
 
     cpus: "0.50"
     mem_limit: 512m
