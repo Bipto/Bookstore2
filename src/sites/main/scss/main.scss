@@ -1,0 +1,6 @@
+@use "variables";
+
+body {
+    color: variables.$primary-color;
+    background-color: variables.$secondary-color;
+}

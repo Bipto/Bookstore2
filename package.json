@@ -1,0 +1,10 @@
+{
+    "private": true,
+    "scripts": {
+        "build": "sass --load-path=src/shared/scss src/sites/main/scss/main.scss src/sites/main/php/public/css/main.css && sass --load-path=src/shared/scss src/sites/admin/scss/admin.scss src/sites/admin/php/public/css/admin.css",
+        "watch": "sass --watch --poll --load-path=src/shared/scss src/sites/main/scss/main.scss:src/sites/main/php/public/css/main.css src/sites/admin/scss/admin.scss:src/sites/admin/php/public/css/admin.css"
+    },
+    "devDependencies": {
+        "sass": "^1.90.0"
+    }
+}
