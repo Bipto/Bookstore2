@@ -44,15 +44,20 @@ class Menubar
 
         $html .= '
         <div class="profile">
-            <div class="profile-circle" id="profile-circle"></div>
+            <div class="profile-button" id="profile-circle">
+                <div class="profile-circle">
+                    <span>AB</span>
+                    <span class="dropdown-arrow"></span>
+                </div>
+
+            </div>
 
             <div class="profile-dropdown" id="profile-dropdown">
                 <a href="profile.php">Profile</a>
                 <a href="settings.php">Settings</a>
                 <a href="logout.php">Log out</a>
             </div>
-        </div>
-';
+        </div>';
 
         $html .= '</div>';
         $html .= '</div>';
