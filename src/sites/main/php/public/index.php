@@ -8,7 +8,7 @@
 
 <body>
 
-    <h1>Main localhost website</h1>
+    <!-- <h1>Main localhost website</h1>
 
     <p>
 
@@ -25,8 +25,26 @@
     <p>
         PHP version:
         <?= PHP_VERSION ?>
-    </p>
+    </p> -->
 
+    <?php
+
+    require_once '/var/www/shared/menubar.php';
+
+    $links = [
+        [
+            'Home' => 'index.php',
+            'Books' => 'books.php',
+            'About' => 'about.php'
+        ]
+    ];
+
+    $menubar = new Menubar($links);
+    echo $menubar->build();
+
+    ?>
+
+    <script src="js/menubar.js"></script>
 </body>
 
 </html>
