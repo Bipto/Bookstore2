@@ -46,7 +46,7 @@ class Menubar
         <div class="profile">
             <div class="profile-button" id="profile-circle">
                 <div class="profile-circle">
-                    <span>AB</span>
+                    <i class="fa-regular fa-user"></i>
                     <span class="dropdown-arrow"></span>
                 </div>
 
