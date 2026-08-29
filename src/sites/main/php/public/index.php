@@ -2,7 +2,9 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
     <title>Main Site</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/main.css">
 
     <link
@@ -37,9 +39,11 @@
 
     $links = [
         [
-            'Home' => 'index.php',
-            'Books' => 'books.php',
-            'About' => 'about.php'
+            'Home' => '/',
+            'Books' => '/books',
+            'Categories' => '/categories',
+            'About' => '/about',
+            'Contact' => '/contact'
         ]
     ];
 

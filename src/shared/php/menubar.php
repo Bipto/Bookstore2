@@ -19,8 +19,14 @@ class Menubar
         $html .= '<img class="company-logo-img" src="img/logo.png">';
         $html .= '</div>';
 
+        $html .=
+            '<button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>';
 
-        $html .= '<div class="links">';
+        $html .= '<div class="links" id="links">';
 
         foreach ($this->links as $link) {
             foreach ($link as $name => $url) {

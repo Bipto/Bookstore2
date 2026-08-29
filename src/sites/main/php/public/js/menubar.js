@@ -15,3 +15,16 @@ document.addEventListener('click', function(event) {
     profile.classList.remove('open');
   }
 });
+
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('links');
+
+hamburger.addEventListener('click', () => {
+  const isOpen = hamburger.classList.toggle('open');
+
+  navLinks.classList.toggle('show', isOpen);
+
+  hamburger.setAttribute('aria-expanded', isOpen);
+  hamburger.setAttribute(
+      'aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+});
