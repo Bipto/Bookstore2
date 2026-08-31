@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Main Site</title>
+    <title>Selby Bookstore</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/main.css">
 
@@ -13,29 +13,10 @@
 </head>
 
 <body>
-
-    <!-- <h1>Main localhost website</h1>
-
-    <p>
-
-        <?php
-
-
-        require '/var/www/shared/common.php';
-        echo 'You are visiting: ' . siteName();
-
-        ?>
-
-    </p>
-
-    <p>
-        PHP version:
-        <?= PHP_VERSION ?>
-    </p> -->
-
     <?php
 
     require_once '/var/www/shared/menubar.php';
+    require_once '/var/www/shared/router.php';
 
     $links = [
         [
@@ -49,6 +30,14 @@
 
     $menubar = new Menubar($links);
     echo $menubar->build();
+
+    $router = new Router();
+    $router->register('/', '/var/www/sites/main/public/pages/main.php');
+    $router->register('/books', '/var/www/sites/main/public/pages/books.php');
+    $router->register('/categories', '/var/www/sites/main/public/pages/categories.php');
+    $router->register('/about', '/var/www/sites/main/public/pages/about.php');
+    $router->register('/contact', '/var/www/sites/main/public/pages/contact.php');
+    $router->dispatch();
 
     ?>
 
