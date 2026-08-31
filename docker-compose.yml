@@ -82,12 +82,30 @@ services:
     networks:
       - web
 
+  # ==========================================================
+  # Postgres
+  # ==========================================================
+
+  postgres:
+    image: postgres:17
+    container_name: bookstore-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: myapp
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
 # ==========================================================
 # Named volumes
 # ==========================================================
 
 volumes:
   sass-node-modules:
+  postgres_data:
 
     # ==========================================================
     # Networks
