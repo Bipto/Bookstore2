@@ -29,12 +29,19 @@ services:
   # ==========================================================
 
   php-main:
-    image: php:8.5-fpm
+    build:
+      context: ./php
     container_name: multidomain-php-main
+
+    env_file:
+      - ./.env
 
     volumes:
       - ./src/sites/main/php:/var/www/sites/main:ro
       - ./src/shared/php:/var/www/shared:ro
+      - ./composer.json:/var/www/composer.json:ro
+      - ./composer.lock:/var/www/composer.lock:ro
+      - vendor:/var/www/vendor
       - ./src/sites/main/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
 
     cpus: "0.50"
@@ -48,12 +55,19 @@ services:
   # ==========================================================
 
   php-admin:
-    image: php:8.5-fpm
+    build:
+      context: ./php
     container_name: multidomain-php-admin
+
+    env_file:
+      - ./.env
 
     volumes:
       - ./src/sites/admin/php:/var/www/sites/admin:ro
       - ./src/shared/php:/var/www/shared:ro
+      - ./composer.json:/var/www/composer.json:ro
+      - ./composer.lock:/var/www/composer.lock:ro
+      - vendor:/var/www/vendor
       - ./src/sites/admin/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
 
     cpus: "0.50"
@@ -91,13 +105,15 @@ services:
     container_name: bookstore-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: myapp
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - web
 
 # ==========================================================
 # Named volumes
@@ -106,6 +122,7 @@ services:
 volumes:
   sass-node-modules:
   postgres_data:
+  vendor:
 
     # ==========================================================
     # Networks
