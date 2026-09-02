@@ -87,9 +87,15 @@ services:
     working_dir: /app
 
     volumes:
-      - ./src:/app/src
+      - ./src/sites/main/scss:/app/src/sites/main/scss:ro
+      - ./src/sites/admin/scss:/app/src/sites/admin/scss:ro
+      - ./src/shared/scss:/app/src/shared/scss:ro
+
       - ./package.json:/app/package.json:ro
       - sass-node-modules:/app/node_modules
+
+      - main_css_dir:/app/src/sites/main/php/public/css
+      - admin_css_dir:/app/src/sites/admin/php/public/css
 
     command: sh -c "npm install && npm run watch"
 
@@ -123,6 +129,8 @@ volumes:
   sass-node-modules:
   postgres_data:
   vendor:
+  main_css_dir:
+  admin_css_dir:
 
     # ==========================================================
     # Networks
