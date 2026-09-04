@@ -22,12 +22,12 @@ try {
     $stmt = $pdo->prepare("SELECT * FROM bookstore.books");
     $stmt->execute();
     $results = $stmt->fetchAll();
-    //var_dump($results);
+    var_dump($results);
 
-    foreach ($results as $result) {
-        echo $result['title'] . ' - ' . $result['author'];
-        echo '<br>';
-    }
+    //foreach ($results as $result) {
+    //    echo $result['title'] . ' - ' . $result['author'];
+    //    echo '<br>';
+    //}
 } catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
 }
