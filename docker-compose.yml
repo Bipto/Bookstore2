@@ -94,8 +94,9 @@ services:
       - ./package.json:/app/package.json:ro
       - sass-node-modules:/app/node_modules
 
-      - main_css_dir:/app/src/sites/main/php/public/css
-      - admin_css_dir:/app/src/sites/admin/php/public/css
+      # CSS output directories
+      - ./src/sites/main/php/public/css:/app/src/sites/main/php/public/css
+      - ./src/sites/admin/php/public/css:/app/src/sites/admin/php/public/css
 
     command: sh -c "npm install && npm run watch"
 
@@ -129,8 +130,6 @@ volumes:
   sass-node-modules:
   postgres_data:
   vendor:
-  main_css_dir:
-  admin_css_dir:
 
     # ==========================================================
     # Networks
