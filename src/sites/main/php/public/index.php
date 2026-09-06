@@ -41,6 +41,7 @@
     $router->register('/categories', '/var/www/sites/main/public/pages/categories.php');
     $router->register('/about', '/var/www/sites/main/public/pages/about.php');
     $router->register('/contact', '/var/www/sites/main/public/pages/contact.php');
+    $router->register('/view_book', '/var/www/sites/main/public/pages/view_book.php');
     $router->dispatch();
 
     ?>

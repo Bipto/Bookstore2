@@ -326,3 +326,77 @@ body {
         }
     }
 }
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.8em;
+    padding: 0.8em;
+}
+
+.book-title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.book {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.book-image {
+    width: 90%;
+    aspect-ratio: 1;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+    object-fit: contain;
+}
+
+.book-title {
+    width: 90%;
+    margin: 0.5em 0 0;
+
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.book .tooltiptext {
+    visibility: hidden;
+    opacity: 0;
+
+    position: absolute;
+    z-index: 100;
+
+    width: 180px;
+    padding: 8px 10px;
+
+    bottom: calc(100% - 10px);
+    left: 50%;
+    transform: translateX(-50%);
+
+    background: #222;
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+
+    transition: opacity 0.2s ease;
+}
+
+.book:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0.5s;
+}
+
+.book:hover {
+    background-color: red;
+    border-radius: 25px;
+    transform: scale(1.01);
+}

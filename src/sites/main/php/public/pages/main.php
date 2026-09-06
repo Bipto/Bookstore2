@@ -1,5 +1,3 @@
-<h1>View Books</h1>
-
 <?php
 
 $host = $_ENV['POSTGRES_HOST'];
@@ -22,12 +20,29 @@ try {
     $stmt = $pdo->prepare("SELECT * FROM bookstore.books");
     $stmt->execute();
     $results = $stmt->fetchAll();
-    var_dump($results);
+    //var_dump($results);
 
-    //foreach ($results as $result) {
-    //    echo $result['title'] . ' - ' . $result['author'];
-    //    echo '<br>';
-    //}
+    $html = '';
+    $html .= '<div class="book-grid">';
+
+    foreach ($results as $result) {
+        $html .= '<a href="view_book?id=' . $result['book_id'] . '">';
+        $html .= '<div class="book">';
+
+        $imagePath = 'img/' . $result['image_path'];
+
+        $html .= '<img src=' . $imagePath . ' class="book-image" loading="lazy">
+                            <h3 class="book-title">' . $result['title'] . '</h3>
+                            <span class="tooltiptext">' . $result['title'] . '</span>';
+
+
+        $html .= '</div>';
+        $html .= '</a>';
+    }
+
+    $html .= '</div>';
+
+    echo $html;
 } catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
 }
