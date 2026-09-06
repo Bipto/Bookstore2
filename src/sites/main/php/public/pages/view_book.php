@@ -1,5 +1,11 @@
 <?php
 
-$id = $_GET['id'];
+/** @var array{id: string, title: string, author: string} $params */
 
-echo '<h1>' . $id . '</h1>';
+$id = $params[0];
+$title = $params[1];
+$author = $params[2];
+
+echo '<h1>ID: ' . $id . ' </h1>';
+echo '<h1>Title: ' . $title . ' </h1>';
+echo '<h1>Author: ' . $author . ' </h1>';

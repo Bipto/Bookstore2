@@ -17,7 +17,7 @@ class Menubar
 
         // company logo section
         $html .= '<div class="company-logo">';
-        $html .= '<img class="company-logo-img" src="img/logo.png">';
+        $html .= '<img class="company-logo-img" src="/img/logo.png">';
         $html .= '</div>';
 
         //hamburger section

@@ -26,7 +26,14 @@ try {
     $html .= '<div class="book-grid">';
 
     foreach ($results as $result) {
-        $html .= '<a href="view_book?id=' . $result['book_id'] . '">';
+        $url = 'view_book/'
+            . rawurlencode($result['book_id'])
+            . '/title/' . rawurlencode($result['title'])
+            . '/author/' . rawurlencode($result['author']);
+
+        $html .= '<a href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '">';
+
+
         $html .= '<div class="book">';
 
         $imagePath = 'img/' . $result['image_path'];

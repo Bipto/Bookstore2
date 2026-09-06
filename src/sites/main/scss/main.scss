@@ -396,7 +396,7 @@ body {
 }
 
 .book:hover {
-    background-color: red;
+    background-color: variables.$primary-color;
     border-radius: 25px;
     transform: scale(1.01);
 }

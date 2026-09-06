@@ -41,12 +41,17 @@
     $router->register('/categories', '/var/www/sites/main/public/pages/categories.php');
     $router->register('/about', '/var/www/sites/main/public/pages/about.php');
     $router->register('/contact', '/var/www/sites/main/public/pages/contact.php');
-    $router->register('/view_book', '/var/www/sites/main/public/pages/view_book.php');
+    /* $router->register('/view_book/{book_id}/title/{title}/author/{author}', function ($book_id, $title, $author) {
+        echo '<h1>Book ID: ' . $book_id . '</h1>';
+        echo '<h1>Title: ' . $title . '</h1>';
+        echo '<h1>Author: ' . $author . '</h1>';
+    }); */
+    $router->register('/view_book/{book_id}/title/{title}/author/{author}', '/var/www/sites/main/public/pages/view_book.php');
     $router->dispatch();
 
     ?>
 
-    <script src="js/menubar.js"></script>
+    <script src="/js/menubar.js"></script>
 </body>
 
 </html>
