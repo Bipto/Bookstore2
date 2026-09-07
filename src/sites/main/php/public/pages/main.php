@@ -1,26 +1,24 @@
 <?php
 
-$host = $_ENV['POSTGRES_HOST'];
-$port = $_ENV['POSTGRES_PORT'];
-$dbname = $_ENV['POSTGRES_DB'];
-$user = $_ENV['POSTGRES_USER'];
-$password = $_ENV['POSTGRES_PASSWORD'];
+require_once '/var/www/shared/db.php';
 
 try {
-    $pdo = new PDO(
-        "pgsql:host=$host;port=$port;dbname=$dbname",
-        $user,
-        $password,
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        ]
+
+
+    $db = new RelationalDatabase(
+        $_ENV['POSTGRES_DRIVER'],
+        $_ENV['POSTGRES_HOST'],
+        $_ENV['POSTGRES_PORT'],
+        $_ENV['POSTGRES_DB'],
+        $_ENV['POSTGRES_USER'],
+        $_ENV['POSTGRES_PASSWORD'],
+        $_ENV['POSTGRES_CHARSET']
     );
 
-    $stmt = $pdo->prepare("SELECT * FROM bookstore.books");
-    $stmt->execute();
-    $results = $stmt->fetchAll();
-    //var_dump($results);
+    $queryBuilder = QueryBuilder::table('bookstore.books')
+        ->select();
+
+    $results = $db->execute($queryBuilder);
 
     $html = '';
     $html .= '<div class="book-grid">';
