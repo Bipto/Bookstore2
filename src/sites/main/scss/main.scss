@@ -401,3 +401,39 @@ body {
     border-radius: 25px;
     transform: scale(1.01);
 }
+
+.view-book {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    padding-left: 20rem;
+    padding-right: 20rem;
+    padding-top: 2em;
+    padding-bottom: 2em;
+}
+
+.view-book-image {
+    width: 20em;
+    height: auto;
+}
+
+.view-book h1,
+.view-book p {
+    margin: 0;
+}
+
+@media (max-width: 920px) {
+    .view-book {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+@media (max-width: 1440px) {
+    .view-book {
+        padding-left: 10rem;
+        padding-right: 10rem;
+    }
+}
