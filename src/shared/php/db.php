@@ -11,6 +11,7 @@ class QueryBuilder
     private array $columns = ['*'];
     private ?QueryType $queryType;
     private string $table;
+    private ?string $where = null;
 
     private function __construct(string $table)
     {
@@ -26,6 +27,12 @@ class QueryBuilder
     {
         $this->queryType = QueryType::SELECT;
         $this->columns = $columns;
+        return $this;
+    }
+
+    public function where(string $where): self
+    {
+        $this->where = $where;
         return $this;
     }
 
@@ -46,6 +53,10 @@ class QueryBuilder
 
             $sql .= ' FROM ';
             $sql .= $this->table;
+
+            if (!is_null($this->where)) {
+                $sql .= ' WHERE ' . $this->where;
+            }
         }
 
         return $sql;
@@ -83,10 +94,17 @@ class RelationalDatabase
         );
     }
 
-    public function execute(QueryBuilder $query)
+    public function executeAndReturnAll(QueryBuilder $query)
     {
         $stmt = $this->pdo->prepare($query->queryString());
         $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    public function executeAndReturnOne(QueryBuilder $query)
+    {
+        $stmt = $this->pdo->prepare($query->queryString());
+        $stmt->execute();
+        return $stmt->fetch();
     }
 }
