@@ -15,26 +15,22 @@ try {
         $_ENV['POSTGRES_CHARSET']
     );
 
-    $queryBuilder = QueryBuilder::table('bookstore.books')
-        ->select();
+    $queryBuilder = QueryBuilder::table('bookstore.books')->select();
 
-    $results = $db->execute($queryBuilder);
+    $results = $db->executeAndReturnAll($queryBuilder);
 
     $html = '';
     $html .= '<div class="book-grid">';
 
     foreach ($results as $result) {
-        $url = 'view_book/'
-            . rawurlencode($result['book_id'])
-            . '/title/' . rawurlencode($result['title'])
-            . '/author/' . rawurlencode($result['author']);
+        $url = 'view_book/' . rawurlencode($result['book_id']);
 
         $html .= '<a href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '">';
 
 
         $html .= '<div class="book">';
 
-        $imagePath = 'img/' . $result['image_path'];
+        $imagePath = '/img/' . $result['image_path'];
 
         $html .= '<img src=' . $imagePath . ' class="book-image" loading="lazy">
                             <h3 class="book-title">' . $result['title'] . '</h3>

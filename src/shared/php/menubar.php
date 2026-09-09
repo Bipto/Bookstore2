@@ -45,22 +45,37 @@ class Menubar
 
         $html .= '</div>';
 
+        $loggedIn = isset($_SESSION['username']);
+
         $html .= '
-            <div class="profile">
-                <div class="profile-button" id="profile-circle">
-                    <div class="profile-circle">
-                        <i class="fa-regular fa-user"></i>
-                        <span class="dropdown-arrow"></span>
-                    </div>
+    <div class="profile">';
 
-                </div>
+        if (!$loggedIn) {
+            $html .= '
+        <a href="/login" class="profile-button" id="profile-circle">
+            <div class="profile-circle">
+                <i class="fa-regular fa-user"></i>
+            </div>
+        </a>';
+        } else {
+            $html .= '
+        <div class="profile-button" id="profile-circle">
+            <div class="profile-circle">
+                <i class="fa-regular fa-user"></i>
+                <span class="dropdown-arrow"></span>
+            </div>
+        </div>
 
-                <div class="profile-dropdown" id="profile-dropdown">
-                    <a href="profile.php">Profile</a>
-                    <a href="settings.php">Settings</a>
-                    <a href="logout.php">Log out</a>
-                </div>
-            </div>';
+        <div class="profile-dropdown" id="profile-dropdown">
+            <a href="/profile">Profile</a>
+            <a href="/settings">Settings</a>
+            <a href="/logout">Log out</a>
+        </div>';
+        }
+
+        $html .= '
+    </div>';
+
 
         $html .= '</div>';
         $html .= '</div>';
