@@ -48,6 +48,8 @@ session_start();
     $router->register('/about', '/var/www/sites/main/public/pages/about.php');
     $router->register('/contact', '/var/www/sites/main/public/pages/contact.php');
     $router->register('/view_book/{book_id}', '/var/www/sites/main/public/pages/view_book.php');
+    $router->register('/login', '/var/www/sites/main/public/pages/login.php');
+    $router->register('/create_account', '/var/www/sites/main/public/pages/create_account.php');
     //$router->register('/view_book/{book_id}/title/{title}/author/{author}', '/var/www/sites/main/public/pages/view_book.php');
     $router->dispatch();
 
