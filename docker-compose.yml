@@ -1,6 +1,32 @@
 services:
 
   # ==========================================================
+  # SFTP
+  # ==========================================================
+
+  sftp:
+    image: atmoz/sftp:latest
+    container_name: multidomain-sftp
+
+    ports:
+      - "2222:22"
+
+    volumes:
+      # Main site
+      - ./src/sites/main:/home/dev/main
+
+      # Admin site
+      - ./src/sites/admin:/home/dev/admin
+
+      # Shared files
+      - ./src/shared:/home/dev/shared
+
+    command: dev:devpass:1001
+
+    networks:
+      - web
+
+  # ==========================================================
   # Apache
   # ==========================================================
 
@@ -69,7 +95,7 @@ services:
       - ./src/sites/admin/php:/var/www/sites/admin:ro
       - ./src/shared/php:/var/www/shared:ro
       - ./composer.json:/var/www/composer.json:ro
-      - ./composer.lock:/var/www/composer.lock:ro
+      - composer-lock:/var/www/composer.lock:ro
       - vendor:/var/www/vendor
       - ./src/sites/admin/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
 
