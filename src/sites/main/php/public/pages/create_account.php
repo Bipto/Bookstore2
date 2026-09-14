@@ -1,5 +1,5 @@
 <div class="form-container">
-    <form>
+    <form method="POST" action="/create-new-user">
         <h2 class="centre-align">Create Account</h2>
 
         <div class="form-entries">
@@ -9,6 +9,9 @@
             <label for="first-name">First Name</label>
             <input type="text" name="first-name" id="first-name">
 
+            <label for="last-name">Last Name</label>
+            <input type="text" name="last-name" id="last-name">
+
             <label for="password">Password</label>
             <input type="password" name="password" id="password">
 
@@ -16,8 +19,8 @@
             <input type="password" name="confirm-password" id="confirm-password">
         </div>
 
-        <div class="centre-align">
-            <button type="submit" class="centre-align">Click Me!</button>
+        <div class="right-align">
+            <button type="submit">Create Account</button>
         </div>
 
     </form>
