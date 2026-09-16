@@ -16,7 +16,6 @@ try {
     );
 
     $queryBuilder = QueryBuilder::table('bookstore.books')->select();
-
     $results = $db->executeAndReturnAll($queryBuilder);
 
     $html = '';

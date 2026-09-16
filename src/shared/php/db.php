@@ -3,15 +3,18 @@
 enum QueryType
 {
     case SELECT;
+    case INSERT;
 }
 
 class QueryBuilder
 {
-
-    private array $columns = ['*'];
     private ?QueryType $queryType;
+    private string $selectString = '';
+    private string $insertString = '';
     private string $table;
-    private ?string $where = null;
+
+    private $bindingValues = [];
+    private string $whereString = '';
 
     private function __construct(string $table)
     {
@@ -26,14 +29,82 @@ class QueryBuilder
     public function select(array $columns = ['*']): self
     {
         $this->queryType = QueryType::SELECT;
-        $this->columns = $columns;
+
+        $this->selectString = 'SELECT ';
+
+        $count = count($columns);
+
+        for ($i = 0; $i < $count; $i++) {
+            $column = $columns[$i];
+            $this->selectString .=  $column;
+
+            if ($i !== $count - 1) {
+                $this->selectString .= ', ';
+            }
+        }
+
+        $this->selectString .= 'FROM ' . $this->table;
+
         return $this;
     }
 
-    public function where(string $where): self
+    public function insert(array $values): self
     {
-        $this->where = $where;
+        $this->queryType = QueryType::INSERT;
+
+        $keysSQL = '(';
+        $valuesSQL = '(';
+
+        $count = count($values);
+        $keys = array_keys($values);
+        $values = array_values($values);
+
+        for ($i = 0; $i < $count; $i++) {
+            $paramName = ":{$keys[$i]}";
+            $keysSQL .= "{$keys[$i]}";
+            $valuesSQL .= "{$paramName}";
+
+            $this->bindingValues[$paramName] = $values[$i];
+
+            if ($i !== $count - 1) {
+                $keysSQL .= ', ';
+                $valuesSQL .= ', ';
+            }
+        }
+
+        $keysSQL .= ')';
+        $valuesSQL .= ')';
+
+        $this->insertString = "INSERT INTO {$this->table}{$keysSQL} VALUES {$valuesSQL}";
+
         return $this;
+    }
+
+    public function where(array $where): self
+    {
+        $this->whereString = 'WHERE ';
+
+        $count = count($where);
+        $keys = array_keys($where);
+        $values = array_values($where);
+
+        for ($i = 0; $i < $count; $i++) {
+            $paramName = ":{$keys[$i]}";
+            $this->whereString .= "{$keys[$i]} = {$paramName}";
+
+            $this->bindingValues[$paramName] = $values[$i];
+
+            if ($i !== $count - 1) {
+                $this->selectString .= ' AND ';
+            }
+        }
+
+        return $this;
+    }
+
+    public function getBindingParameters(): array
+    {
+        return $this->bindingValues;
     }
 
     public function queryString(): string
@@ -45,18 +116,9 @@ class QueryBuilder
         $sql = '';
 
         if ($this->queryType === QueryType::SELECT) {
-            $sql .= 'SELECT';
-
-            foreach ($this->columns as $column) {
-                $sql .= ' ' . $column;
-            }
-
-            $sql .= ' FROM ';
-            $sql .= $this->table;
-
-            if (!is_null($this->where)) {
-                $sql .= ' WHERE ' . $this->where;
-            }
+            $sql .= $this->selectString . ' ' . $this->whereString;
+        } else if ($this->queryType === QueryType::INSERT) {
+            $sql .= $this->insertString .= ' ' . $this->whereString;
         }
 
         return $sql;
@@ -65,7 +127,7 @@ class QueryBuilder
 
 class RelationalDatabase
 {
-    private $pdo = null;
+    private ?PDO $pdo = null;
 
     public function __construct(
         string $driver,
@@ -94,17 +156,35 @@ class RelationalDatabase
         );
     }
 
+    public function select(string $table, array $columns = ['*']): string
+    {
+        $sql = 'SELECT ';
+
+        $count = count($columns);
+        for ($i = 0; $i < $count; $i++) {
+            $sql .= $columns[$i];
+
+            if ($i != $count - 1) {
+                $sql .= ',';
+            }
+        }
+
+        $sql .= ' FROM ' . $table;
+
+        return $sql;
+    }
+
     public function executeAndReturnAll(QueryBuilder $query)
     {
         $stmt = $this->pdo->prepare($query->queryString());
-        $stmt->execute();
+        $stmt->execute($query->getBindingParameters());
         return $stmt->fetchAll();
     }
 
     public function executeAndReturnOne(QueryBuilder $query)
     {
         $stmt = $this->pdo->prepare($query->queryString());
-        $stmt->execute();
+        $stmt->execute($query->getBindingParameters());
         return $stmt->fetch();
     }
 }

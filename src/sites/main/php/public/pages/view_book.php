@@ -19,12 +19,12 @@ $db = new RelationalDatabase(
 
 $queryBuilder = QueryBuilder::table('bookstore.books')
     ->select()
-    ->where('book_id = ' . $id);
+    ->where(['book_id' => $id]);
 
 $result = $db->executeAndReturnOne($queryBuilder);
 
 if ($result) {
-    $imagePath = '/img/' . $result['image_path'];
+    $imagePath = "/img/{$result['image_path']}";
 
     $html = '
 <div class="view-book">
@@ -39,3 +39,21 @@ if ($result) {
 } else {
     echo '<h3>Could not find book!</h3>';
 }
+
+/* $queryBuilder = QueryBuilder::table('bookstore.books')
+    ->insert([
+        'title' => 'The Very Hungry Caterpillar',
+        'author' => 'Test',
+        'book_description' => 'Test Description',
+        'genre' => 'Children',
+        'price' => 5.99,
+        'stock_count' => 50,
+        'image_path' => 'test'
+    ]);
+
+echo $queryBuilder->queryString();
+echo '<br>';
+echo json_encode($queryBuilder->getBindingParameters());
+echo '<br>';
+
+$db->executeAndReturnOne($queryBuilder); */
