@@ -48,4 +48,23 @@ $router->get('/books/{id}', function ($id) {
     $result = $db->executeAndReturnOne($queryBuilder);
     echo json_encode($result);
 });
+
+$router->post(
+    '/users',
+    function () {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        $db = openDB();
+        $queryBuilder = QueryBuilder::table('bookstore.users')
+            ->insert([
+                'email' => $data['email'],
+                'first_name' =>  $data['firstName'],
+                'last_name' => $data['lastName'],
+                'password' => $data['password']
+            ]);
+        $db->execute($queryBuilder);
+    }
+
+);
+
 $router->dispatch();

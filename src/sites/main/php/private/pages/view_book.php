@@ -6,7 +6,7 @@ require_once '/var/www/shared/api.php';
 
 $id = $params[0];
 
-$response = API::call("/books/{$id}");
+$response = API::get("/books/{$id}");
 $results = json_decode($response, true);
 
 if ($results['success']) {

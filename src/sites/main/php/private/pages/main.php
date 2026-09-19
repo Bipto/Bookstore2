@@ -1,9 +1,8 @@
 <?php
 
-require_once '/var/www/shared/db.php';
 require_once '/var/www/shared/api.php';
 
-$response = API::call('/books');
+$response = API::get('/books');
 $results = json_decode($response, true);
 
 if ($results['success']) {
@@ -23,7 +22,7 @@ if ($results['success']) {
                 <a href='{$url}'>
                     <div class='book'>
                         <img src='{$imagePath}' class='book-image' loading='lazy'>
-                        <h3 class='book-title'>'{$result['title']}</h3>
+                        <h3 class='book-title'>{$result['title']}</h3>
                         <span class='tooltiptext'>{$result['title']}</span>
                     </div>
                 </a>

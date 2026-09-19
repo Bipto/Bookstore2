@@ -156,17 +156,40 @@ class RelationalDatabase
         );
     }
 
-    public function executeAndReturnAll(QueryBuilder $query)
+    private function executeImpl(QueryBuilder $query): PDOStatement
     {
         $stmt = $this->pdo->prepare($query->queryString());
         $stmt->execute($query->getBindingParameters());
-        return $stmt->fetchAll();
+        return $stmt;
+    }
+
+    public function execute(QueryBuilder $query): bool
+    {
+        try {
+            $this->executeImpl($query);
+            return true;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function executeAndReturnAll(QueryBuilder $query)
+    {
+        try {
+            $stmt = $this->executeImpl($query);
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            return [];
+        }
     }
 
     public function executeAndReturnOne(QueryBuilder $query)
     {
-        $stmt = $this->pdo->prepare($query->queryString());
-        $stmt->execute($query->getBindingParameters());
-        return $stmt->fetch();
+        try {
+            $stmt = $this->executeImpl($query);
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            return [];
+        }
     }
 }

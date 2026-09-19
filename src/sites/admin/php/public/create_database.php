@@ -495,7 +495,7 @@ try {
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS bookstore.books (
             book_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            title VARCHAR(50) NOT NULL,
+            title VARCHAR(50) NOT NULL UNIQUE,
             author VARCHAR(50) NOT NULL,
             book_description TEXT NOT NULL,
             genre VARCHAR(30) NOT NULL,
@@ -505,7 +505,19 @@ try {
         )
     ");
 
+    echo 'Created books table<br>';
     createBooks($pdo);
+
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS bookstore.users (
+            user_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            email VARCHAR(150) NOT NULL UNIQUE,
+            first_name VARCHAR(50) NOT NULL,
+            last_name VARCHAR(50) NOT NULL,
+            password VARCHAR(150) NOT NULL
+        )
+    ");
+    echo 'Created users table';
 } catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
 }
