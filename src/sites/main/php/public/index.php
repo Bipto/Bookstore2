@@ -42,16 +42,16 @@ session_start();
     echo $menubar->build();
 
     $router = new Router();
-    $router->get('/', '/var/www/sites/main/public/pages/main.php');
-    $router->get('/books', '/var/www/sites/main/public/pages/books.php');
-    $router->get('/categories', '/var/www/sites/main/public/pages/categories.php');
-    $router->get('/about', '/var/www/sites/main/public/pages/about.php');
-    $router->get('/contact', '/var/www/sites/main/public/pages/contact.php');
-    $router->get('/view_book/{book_id}', '/var/www/sites/main/public/pages/view_book.php');
-    $router->get('/login', '/var/www/sites/main/public/pages/login.php');
-    $router->get('/create_account', '/var/www/sites/main/public/pages/create_account.php');
+    $router->get('/', '/var/www/sites/main/private/pages/main.php');
+    $router->get('/books', '/var/www/sites/main/private/pages/books.php');
+    $router->get('/categories', '/var/www/sites/main/private/pages/categories.php');
+    $router->get('/about', '/var/www/sites/main/private/pages/about.php');
+    $router->get('/contact', '/var/www/sites/main/private/pages/contact.php');
+    $router->get('/view_book/{book_id}', '/var/www/sites/main/private/pages/view_book.php');
+    $router->get('/login', '/var/www/sites/main/private/pages/login.php');
+    $router->get('/create_account', '/var/www/sites/main/private/pages/create_account.php');
 
-    $router->post('/create-new-user', '/var/www/sites/main/public/forms/create_new_user.php');
+    $router->post('/create-new-user', '/var/www/sites/main/private/forms/create_new_user.php');
 
     $router->dispatch();
 
