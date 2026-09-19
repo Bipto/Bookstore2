@@ -18,6 +18,9 @@ services:
       # Admin site
       - ./src/sites/admin:/home/dev/admin
 
+      # API files
+      - ./src/api:/home/dev/api
+
       # Shared files
       - ./src/shared:/home/dev/shared
 
@@ -41,11 +44,13 @@ services:
     volumes:
       - ./src/sites/main/php:/var/www/sites/main:ro
       - ./src/sites/admin/php:/var/www/sites/admin:ro
+      - ./src/api/php:/var/www/api:ro
       - ./src/shared/php:/var/www/shared:ro
 
     depends_on:
       - php-main
       - php-admin
+      - php-api
 
     networks:
       - web
@@ -98,6 +103,35 @@ services:
       - composer-lock:/var/www/composer.lock:ro
       - vendor:/var/www/vendor
       - ./src/sites/admin/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    cpus: "0.50"
+    mem_limit: 512m
+
+    networks:
+      - web
+
+  # ==========================================================
+  # api.localhost
+  # ==========================================================
+
+  php-api:
+    build:
+      context: ./php
+    container_name: multidomain-php-api
+
+    env_file:
+      - ./.env
+
+    volumes:
+      - ./src/api/php:/var/www/api:ro
+      - ./src/shared/php:/var/www/shared:ro
+      - ./composer.json:/var/www/composer.json:ro
+      - composer-lock:/var/www/composer.lock:ro
+      - vendor:/var/www/vendor
+      - ./src/api/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
 
     extra_hosts:
       - "host.docker.internal:host-gateway"

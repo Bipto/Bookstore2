@@ -156,24 +156,6 @@ class RelationalDatabase
         );
     }
 
-    public function select(string $table, array $columns = ['*']): string
-    {
-        $sql = 'SELECT ';
-
-        $count = count($columns);
-        for ($i = 0; $i < $count; $i++) {
-            $sql .= $columns[$i];
-
-            if ($i != $count - 1) {
-                $sql .= ',';
-            }
-        }
-
-        $sql .= ' FROM ' . $table;
-
-        return $sql;
-    }
-
     public function executeAndReturnAll(QueryBuilder $query)
     {
         $stmt = $this->pdo->prepare($query->queryString());

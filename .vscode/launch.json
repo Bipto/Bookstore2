@@ -9,7 +9,8 @@
             "pathMappings": {
                 "/var/www/sites/main": "${workspaceFolder}/src/sites/main/php",
                 "/var/www/sites/admin": "${workspaceFolder}/src/sites/admin/php",
-                "/var/www/shared": "${workspaceFolder}/src/shared/php"
+                "/var/www/shared": "${workspaceFolder}/src/shared/php",
+                "/var/www/api": "${workspaceFolder}/src/api/php",
             }
         }
     ]
