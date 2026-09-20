@@ -45,7 +45,7 @@ class Menubar
 
         $html .= '</div>';
 
-        $loggedIn = isset($_SESSION['username']);
+        $loggedIn = isset($_SESSION['email']);
 
         $html .= '
     <div class="profile">';

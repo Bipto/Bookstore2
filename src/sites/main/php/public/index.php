@@ -50,8 +50,10 @@ session_start();
     $router->get('/view_book/{book_id}', '/var/www/sites/main/private/pages/view_book.php');
     $router->get('/login', '/var/www/sites/main/private/pages/login.php');
     $router->get('/create_account', '/var/www/sites/main/private/pages/create_account.php');
+    $router->get('/logout', '/var/www/sites/main/private/utils/handle_logout.php');
 
-    $router->post('/create-new-user', '/var/www/sites/main/private/forms/create_new_user.php');
+    $router->post('/login', '/var/www/sites/main/private/utils/handle_login.php');
+    $router->post('/create_account', '/var/www/sites/main/private/utils/handle_registration.php');
 
     $router->dispatch();
 
