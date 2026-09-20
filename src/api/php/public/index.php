@@ -39,6 +39,7 @@ $router->get('/books', function () {
 
     echo json_encode($result);
 });
+
 $router->get('/books/{id}', function ($id) {
     $db = openDB();
     $queryBuilder = QueryBuilder::table('bookstore.books')
@@ -54,17 +55,41 @@ $router->post(
     function () {
         $data = json_decode(file_get_contents('php://input'), true);
 
+        $password = password_hash($data['password'], PASSWORD_DEFAULT);
+
         $db = openDB();
         $queryBuilder = QueryBuilder::table('bookstore.users')
             ->insert([
                 'email' => $data['email'],
                 'first_name' =>  $data['firstName'],
                 'last_name' => $data['lastName'],
-                'password' => $data['password']
+                'password' => $password
             ]);
-        $db->execute($queryBuilder);
-    }
 
+        $json = [];
+        $json['success'] = $db->execute($queryBuilder);
+        echo json_encode($json);
+    }
+);
+
+$router->post(
+    '/auth/login',
+    function () {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        $db = openDB();
+        $queryBuilder = QueryBuilder::table('bookstore.users')
+            ->select()
+            ->where([
+                'email' => $data['email']
+            ]);
+
+        $result = $db->executeAndReturnOne($queryBuilder);
+
+        $json = [];
+        $json['success'] = password_verify($data['password'], $result['password']);
+        echo json_encode($json);
+    }
 );
 
 $router->dispatch();
