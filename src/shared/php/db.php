@@ -156,6 +156,11 @@ class RelationalDatabase
         );
     }
 
+    public function getPDO(): PDO
+    {
+        return $this->pdo;
+    }
+
     private function executeImpl(QueryBuilder $query): PDOStatement
     {
         $stmt = $this->pdo->prepare($query->queryString());
