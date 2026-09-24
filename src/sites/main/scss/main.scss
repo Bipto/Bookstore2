@@ -10,17 +10,19 @@
 
 html,
 body {
-    height: 100%;
     margin: 0;
-    color: variables.$primary-color;
-    background-color: variables.$secondary-color;
+    min-height: 100%;
 }
 
 body {
+    min-height: 100vh;
+
     display: flex;
     flex-direction: column;
-}
 
+    color: variables.$primary-color;
+    background-color: variables.$secondary-color;
+}
 
 // ==============================
 // Navigation bar
@@ -84,7 +86,7 @@ body {
 // Profile
 // ==============================
 
-.profile {
+.right-hand-menu {
     position: relative;
     justify-self: end;
     display: flex;
@@ -152,7 +154,7 @@ body {
 // Profile dropdown
 // ==============================
 
-.profile-dropdown {
+.menu-dropdown {
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
@@ -208,8 +210,7 @@ body {
 // ==============================
 // Dropdown arrow
 // ==============================
-
-.dropdown-arrow {
+.dropdown-arrow-cart {
     width: 7px;
     height: 7px;
 
@@ -222,12 +223,31 @@ body {
     transition: transform 0.2s ease;
 }
 
+.dropdown-arrow-profile {
+    width: 7px;
+    height: 7px;
+
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+
+    transform: rotate(45deg);
+    transform-origin: center;
+
+    transition: transform 0.2s ease;
+}
+
+
 .profile.open {
-    .dropdown-arrow {
+    .dropdown-arrow-profile {
         transform: rotate(225deg);
     }
 }
 
+.cart.open {
+    .dropdown-arrow-cart {
+        transform: rotate(225deg);
+    }
+}
 
 // ==============================
 // Hamburger menu
@@ -498,17 +518,19 @@ body {
 
 .page {
     flex: 1;
+
+    display: flex;
+    flex-direction: column;
 }
 
-.container {
+.spinner-container {
+    flex: 1;
+
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
 
-    height: 100%;
-
-    flex: 1;
     min-height: 0;
 }
 

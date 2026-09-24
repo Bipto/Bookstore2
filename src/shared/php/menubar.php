@@ -48,11 +48,24 @@ class Menubar
         $loggedIn = isset($_SESSION['email']);
 
         $html .= '
-    <div class="profile">';
+    <div class="right-hand-menu">
+    <div class="cart">
+        <div class="cart-circle" id="cart-circle">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="dropdown-arrow-cart"></span>
+        </div>
 
-        $html .= '<div class="cart-circle">
-    <i class="fa-solid fa-cart-shopping"></i>
-    </div>';
+        <div class="menu-dropdown" id="cart-dropdown">
+            <div class="spinner-container">
+                <div class="spinner">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    ';
+
+        $html .= '<div class="profile">';
 
         if (!$loggedIn) {
             $html .= '
@@ -66,11 +79,11 @@ class Menubar
         <div class="profile-button" id="profile-circle">
             <div class="profile-circle">
                 <i class="fa-regular fa-user"></i>
-                <span class="dropdown-arrow"></span>
+                <span class="dropdown-arrow-profile"></span>
             </div>
         </div>
 
-        <div class="profile-dropdown" id="profile-dropdown">
+        <div class="menu-dropdown" id="profile-dropdown">
             <a href="/profile">Profile</a>
             <a href="/settings">Settings</a>
             <a href="/logout">Log out</a>
@@ -81,6 +94,7 @@ class Menubar
     </div>';
 
 
+        $html .= '</div>';
         $html .= '</div>';
         $html .= '</div>';
 
