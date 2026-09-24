@@ -8,10 +8,17 @@
 // Base
 // ==============================
 
+html,
 body {
+    height: 100%;
     margin: 0;
     color: variables.$primary-color;
     background-color: variables.$secondary-color;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
 }
 
 
@@ -20,6 +27,8 @@ body {
 // ==============================
 
 .menubar {
+    flex-shrink: 0;
+
     width: 100%;
     box-sizing: border-box;
 
@@ -484,5 +493,42 @@ body {
         padding-bottom: 2em;
         padding-left: 25%;
         padding-right: 25%;
+    }
+}
+
+.page {
+    flex: 1;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    height: 100%;
+
+    flex: 1;
+    min-height: 0;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #e5e5e5;
+    border-top: 6px solid #4f46e5;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spinner {
+        animation-duration: 3s;
     }
 }
