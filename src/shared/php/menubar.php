@@ -50,6 +50,10 @@ class Menubar
         $html .= '
     <div class="profile">';
 
+        $html .= '<div class="cart-circle">
+    <i class="fa-solid fa-cart-shopping"></i>
+    </div>';
+
         if (!$loggedIn) {
             $html .= '
         <a href="/login" class="profile-button" id="profile-circle">

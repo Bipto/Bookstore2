@@ -78,6 +78,8 @@ body {
 .profile {
     position: relative;
     justify-self: end;
+    display: flex;
+    flex-direction: row;
 }
 
 .profile-button {
@@ -86,6 +88,31 @@ body {
     gap: 6px;
 
     cursor: pointer;
+}
+
+.cart-circle {
+    width: 4em;
+    height: 4em;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    overflow: hidden;
+
+    margin-right: 1.5em;
+
+    background-color: variables.$secondary-color;
+
+    i {
+        font-size: 32px;
+    }
+
+    span {
+        color: white;
+        font-weight: bold;
+    }
 }
 
 .profile-circle {
