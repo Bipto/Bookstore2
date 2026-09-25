@@ -79,6 +79,7 @@ $router->post(
 
         $email = $data['email'];
         $bookId = $data['bookId'];
+        $quantity = $data['quantity'] ?? 1;
 
         $db = openDB();
         $pdo = $db->getPDO();
@@ -89,6 +90,10 @@ $router->post(
         ');
 
         $succeeded = $stmt->execute(['email' => $email]);
+        if (!$succeeded) {
+            return json_encode(['success' => false]);
+        }
+
         $userId = $succeeded ? $stmt->fetch(PDO::FETCH_ASSOC)['user_id'] : null;
 
         $stmt = $pdo->prepare('
@@ -110,7 +115,23 @@ $router->post(
             LIMIT 1;
         ');
         $succeeded = $stmt->execute(['user_id' => $userId]);
+        if (!$succeeded) {
+            return json_encode(['success' => false]);
+        }
+
         $cartId = $stmt->fetch(PDO::FETCH_ASSOC)['cart_id'] ?? null;
+
+        $stmt = $pdo->prepare('
+        INSERT INTO bookstore.cart_items(cart_id, book_id, quantity)
+        VALUES(:cart_id, :book_id, :quantity)
+        ');
+        $succeeded = $stmt->execute([
+            ':cart_id' => $cartId,
+            ':book_id' => $bookId,
+            ':quantity' => $quantity
+        ]);
+
+        return json_encode(['success' => $succeeded]);
 
         /* $queryBuilder = QueryBuilder::table('bookstore.users')
             ->insert([
