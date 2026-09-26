@@ -20,7 +20,12 @@ if ($response['success'] == true) {
         $total = 0;
 
         foreach ($cartData as $item) {
-            echo "{$item['title']} - {$item['author']} - x{$item['quantity']})<hr>";
+            $quantity = $item['quantity'] ?? 0;
+            $quantityDisplay = $quantity > 1 ? "- x{$quantity}" : "";
+            $price = ($item['price'] ?? 0) * $quantity;
+            $formattedPrice = number_format($price, 2);
+            $priceDisplay = "(£{$formattedPrice})";
+            echo "{$item['title']} - {$item['author']}{$quantityDisplay}{$priceDisplay}<hr>";
 
             $total += $item['price'];
         }
