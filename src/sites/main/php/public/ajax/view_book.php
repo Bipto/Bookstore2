@@ -32,7 +32,7 @@ if ($results['success']) {
             url: "/ajax/add_book_to_cart.php?book_id=' . $id . '",
             type: "GET",
             success: function (html) {
-                $(".page").html(html);
+                $(location).prop("href", "/");
             },
             error: function () {
                 $(".page").html("<p>Something went wrong.</p>");

@@ -147,6 +147,36 @@ $router->post(
     }
 );
 
+$router->get(
+    '/cart',
+    function () {
+        $db = openDB();
+        $pdo = $db->getPDO();
+
+        $email = $_GET['email'];
+
+        $stmt = $pdo->prepare('
+            SELECT title, author, price, image_path, quantity
+            FROM bookstore.books AS b
+            INNER JOIN bookstore.cart_items AS ci
+                ON ci.book_id = b.book_id
+            INNER JOIN bookstore.carts AS c
+                ON c.cart_id = ci.cart_id
+            INNER JOIN bookstore.users AS u
+                ON u.user_id = c.user_id
+            WHERE u.email = :email
+        ');
+
+        $json = [];
+        $success =         $stmt->execute([':email' => $email]);
+        if ($success) {
+            $json['success'] = $success;
+            $json['cart'] = $stmt->fetchAll();
+        }
+        echo json_encode($json);
+    }
+);
+
 $router->post(
     '/auth/login',
     function () {
