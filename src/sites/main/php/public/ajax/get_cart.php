@@ -27,7 +27,7 @@ if ($response['success'] == true) {
             $priceDisplay = "(£{$formattedPrice})";
             echo "{$item['title']} - {$item['author']}{$quantityDisplay}{$priceDisplay}<hr>";
 
-            $total += $item['price'];
+            $total += $price;
         }
         echo "Order total: £{$total}";
     }
