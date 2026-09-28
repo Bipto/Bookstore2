@@ -56,7 +56,9 @@ class Menubar
         </div>
 
         <div class="menu-dropdown" id="cart-dropdown" style="width: 20em;">
-            <div class="spinner-container">
+            <div id="cart-content">
+            </div>
+            <div class="spinner-container" id="cart-spinner">
                 <div class="spinner">
                 </div>
             </div>

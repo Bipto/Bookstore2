@@ -19,6 +19,8 @@ $(function() {
 
     $cart.removeClass('open');
     $cartDropdown.removeClass('show');
+
+    $('#cart-spinner').show();
   });
 
   // Cart
@@ -35,10 +37,12 @@ $(function() {
       url: '/ajax/get_cart.php',
       type: 'GET',
       success: function(html) {
-        $('#cart-dropdown').html(html);
+        $('#cart-content').html(html);
+        $('#cart-content').show();
+        $('#cart-spinner').hide()
       },
       error: function() {
-        $('#cart-dropdown').html('<p>Something went wrong.</p>');
+        $('#cart-content').html('<p>Something went wrong.</p>');
       }
     });
   });
@@ -54,6 +58,9 @@ $(function() {
       $cart.removeClass('open');
       $cartDropdown.removeClass('show');
     }
+
+    $('#cart-content').hide();
+    $('#cart-spinner').show()
   });
 
   // Hamburger
