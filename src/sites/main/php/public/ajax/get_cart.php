@@ -4,7 +4,8 @@ require_once '/var/www/shared/api.php';
 
 session_start();
 
-urlencode($email = $_SESSION['email'] ?? null);
+$email = $_SESSION['email'] ?? '';
+$email = urlencode($email);
 
 $url = "/cart?email={$email}";
 
@@ -30,6 +31,7 @@ if ($response['success'] == true) {
             $total += $price;
         }
         echo "Order total: £{$total}";
+        echo "<a href='/checkout'><button>Checkout</button></a>";
     }
 } else {
     echo '<p>Failed to get cart</p>';

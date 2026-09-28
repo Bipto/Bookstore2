@@ -52,6 +52,7 @@ session_start();
     $router->get('/login', '/var/www/sites/main/private/pages/login.php');
     $router->get('/create_account', '/var/www/sites/main/private/pages/create_account.php');
     $router->get('/logout', '/var/www/sites/main/private/utils/handle_logout.php');
+    $router->get('/checkout', '/var/www/sites/main/private/pages/checkout.php');
 
     $router->post('/login', '/var/www/sites/main/private/utils/handle_login.php');
     $router->post('/create_account', '/var/www/sites/main/private/utils/handle_registration.php');

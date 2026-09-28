@@ -33,6 +33,9 @@ $(function() {
     $profile.removeClass('open');
     $profileDropdown.removeClass('show');
 
+    $('#cart-content').hide();
+    $('#cart-spinner').show();
+
     $.ajax({
       url: '/ajax/get_cart.php',
       type: 'GET',
@@ -58,9 +61,6 @@ $(function() {
       $cart.removeClass('open');
       $cartDropdown.removeClass('show');
     }
-
-    $('#cart-content').hide();
-    $('#cart-spinner').show()
   });
 
   // Hamburger
