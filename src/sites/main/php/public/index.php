@@ -28,6 +28,7 @@ session_start();
 
     require_once '/var/www/shared/menubar.php';
     require_once '/var/www/shared/router.php';
+    require_once '/var/www/shared/ajax.php';
 
     $links = [
         [
@@ -43,12 +44,18 @@ session_start();
     echo $menubar->build();
 
     $router = new Router();
-    $router->get('/', '/var/www/sites/main/private/pages/main.php');
+    $router->get('/', function () {
+        echo AJAX::call('/ajax/view_book_grid.php');
+    });
     $router->get('/books', '/var/www/sites/main/private/pages/books.php');
     $router->get('/categories', '/var/www/sites/main/private/pages/categories.php');
     $router->get('/about', '/var/www/sites/main/private/pages/about.php');
     $router->get('/contact', '/var/www/sites/main/private/pages/contact.php');
-    $router->get('/view_book/{book_id}', '/var/www/sites/main/private/pages/view_book.php');
+
+    $router->get('/view_book/{book_id}', function ($id) {
+        echo AJAX::call("/ajax/view_book.php?id={$id}");
+    });
+
     $router->get('/login', '/var/www/sites/main/private/pages/login.php');
     $router->get('/create_account', '/var/www/sites/main/private/pages/create_account.php');
     $router->get('/logout', '/var/www/sites/main/private/utils/handle_logout.php');
