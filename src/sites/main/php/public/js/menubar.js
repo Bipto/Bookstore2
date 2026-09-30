@@ -19,49 +19,51 @@ $(function() {
 
     $cart.removeClass('open');
     $cartDropdown.removeClass('show');
-
-    $('#cart-spinner').show();
   });
 
   // Cart
   $cartCircle.on('click', function(event) {
     event.stopPropagation();
 
-    $cart.toggleClass('open');
-    $cartDropdown.toggleClass('show');
+    const isOpen = $cart.toggleClass('open').hasClass('open');
+    $cartDropdown.toggleClass('show', isOpen);
 
     $profile.removeClass('open');
     $profileDropdown.removeClass('show');
 
-    $('#cart-content').hide();
-    $('#cart-spinner').show();
+    if (isOpen) {
+      $('#cart-content').hide();
+      $('#cart-spinner').show();
 
-    $.ajax({
-      url: '/ajax/get_cart.php',
-      type: 'GET',
-      success: function(html) {
-        $('#cart-content').html(html);
-        $('#cart-content').show();
-        $('#cart-spinner').hide()
-      },
-      error: function() {
-        $('#cart-content').html('<p>Something went wrong.</p>');
-      }
-    });
+      $.ajax({
+        url: '/ajax/get_cart.php',
+        type: 'GET',
+        success: function(html) {
+          $('#cart-content').html(html).show();
+          $('#cart-spinner').hide();
+        },
+        error: function() {
+          $('#cart-content').html('<p>Something went wrong.</p>').show();
+          $('#cart-spinner').hide();
+        }
+      });
+    }
   });
 
-  // Close profile/cart when clicking outside
+
+  // handle the user clicking outside the dropdown
   $(document).on('click', function(event) {
-    if (!$(event.target).closest('.profile').length) {
+    if (!$(event.target).closest('.profile, #profile-dropdown').length) {
       $profile.removeClass('open');
       $profileDropdown.removeClass('show');
     }
 
-    if (!$(event.target).closest('.cart').length) {
+    if (!$(event.target).closest('.cart, #cart-dropdown').length) {
       $cart.removeClass('open');
       $cartDropdown.removeClass('show');
     }
   });
+
 
   // Hamburger
   $hamburger.on('click', function() {

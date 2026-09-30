@@ -156,7 +156,7 @@ $router->get(
         $email = $_GET['email'];
 
         $stmt = $pdo->prepare('
-            SELECT title, author, price, image_path, quantity
+            SELECT cart_item_id, title, author, price, image_path, quantity
             FROM bookstore.books AS b
             INNER JOIN bookstore.cart_items AS ci
                 ON ci.book_id = b.book_id
@@ -196,5 +196,4 @@ $router->post(
         echo json_encode($json);
     }
 );
-
 $router->dispatch();

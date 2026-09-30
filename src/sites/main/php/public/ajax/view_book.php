@@ -12,22 +12,19 @@ if ($results['success']) {
 
     $imagePath = "/img/{$data['image_path']}";
 
-    $html = '
-        <div class="view-book">
-            <h1>' . $data['title'] . '</h1>
-            <h2>Author: ' . $data['author'] . ' </h2>
-            <img src=' . $imagePath . ' class="view-book-image" loading="lazy">
-            <p>' . $data['book_description'] . '</p>
-            <button class="add-to-cart">Add to cart</button>
-        </div>
-    ';
+    $html = "
+        <div class='view-book'>
+            <h1>{$data['title']}</h1>
+            <h2>Author:{$data['author']}</h2>
+            <img src='{$imagePath}' class='view-book-image' loading='lazy'>
+            <p>{$data['book_description']}</p>
+            <button class='add-to-cart'>Add to cart</button>
+        </div>";
 
     $html .= '<script>
     
     const addToCartButton = $(".add-to-cart");
     addToCartButton.on("click", function(event){
-        //alert("Adding to cart");
-
         $.ajax({
             url: "/ajax/add_book_to_cart.php?book_id=' . $id . '",
             type: "GET",

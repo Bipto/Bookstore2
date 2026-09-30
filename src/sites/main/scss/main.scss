@@ -176,6 +176,9 @@ body {
     visibility: hidden;
     transform: translateY(-5px);
 
+    max-height: 75vh;
+    overflow-y: auto;
+
     transition:
         opacity 0.15s ease,
         transform 0.15s ease,
