@@ -28,7 +28,7 @@ if ($response['success'] == true) {
             $formattedPrice = number_format($price, 2);
             $priceDisplay = "(£{$formattedPrice})";
             echo "
-            <div id='cart-id-{$cartItemId}'>
+            <div>
             {$item['title']} - {$item['author']}{$quantityDisplay}{$priceDisplay}
             <br>
             <button onclick='RemoveFromCart({$cartItemId}, event);'>Remove</button>
@@ -45,12 +45,16 @@ if ($response['success'] == true) {
         {
         event.stopPropagation();
 
-        const element = document.getElementById('cart-id-' + id);
+        fetch('/ajax/remove_item_from_cart.php?id=' + id)
+            .then(() => {
+                return fetch('/ajax/get_cart.php');
+            })
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('cart-content').innerHTML = html;
+            });
 
-        if (element)
-        {
-            element.remove();
-        }
+
         }
         </script>";
     }

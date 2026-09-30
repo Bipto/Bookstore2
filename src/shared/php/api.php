@@ -28,11 +28,13 @@ class API
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => [
                 'Host: api.localhost',
+                'Content-Type: application/json',
+                'Accept: application/json',
             ],
         ]);
     }
 
-    public static function post(string $url, array $data): string
+    public static function post(string $url, array $data = []): string
     {
         return API::send($url, [
             CURLOPT_POST => true,
@@ -43,6 +45,35 @@ class API
                 'Accept: application/json',
             ],
             CURLOPT_RETURNTRANSFER => true,
+        ]);
+    }
+
+    public static function put(string $url, array $data = []): string
+    {
+        return API::send($url, [
+            CURLOPT_CUSTOMREQUEST => 'PUT',
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_HTTPHEADER => [
+                'Host: api.localhost',
+                'Content-Type: application/json',
+                'Accept: application/json',
+            ],
+            CURLOPT_RETURNTRANSFER => true,
+        ]);
+    }
+
+
+    public static function delete(string $url, array $data = []): string
+    {
+        return API::send($url, [
+            CURLOPT_CUSTOMREQUEST => 'DELETE',
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                'Host: api.localhost',
+                'Content-Type: application/json',
+                'Accept: application/json',
+            ],
         ]);
     }
 }

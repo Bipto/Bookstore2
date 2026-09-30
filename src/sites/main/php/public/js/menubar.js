@@ -50,7 +50,6 @@ $(function() {
     }
   });
 
-
   // handle the user clicking outside the dropdown
   $(document).on('click', function(event) {
     if (!$(event.target).closest('.profile, #profile-dropdown').length) {

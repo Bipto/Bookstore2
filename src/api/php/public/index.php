@@ -177,6 +177,23 @@ $router->get(
     }
 );
 
+$router->delete(
+    '/cart',
+    function () {
+        $db = openDB();
+        $pdo = $db->getPDO();
+
+        $id = $_GET['id'];
+
+        $stmt = $pdo->prepare('DELETE FROM bookstore.cart_items WHERE cart_item_id = :cart_item_id');
+
+        $json = [];
+        $json['success'] = $stmt->execute([':cart_item_id' => $id]);
+
+        echo json_encode($json);
+    }
+);
+
 $router->post(
     '/auth/login',
     function () {
