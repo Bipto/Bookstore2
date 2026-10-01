@@ -69,6 +69,7 @@ session_start();
     ?>
 
     <script src="/js/menubar.js"></script>
+    <!-- <script src="/js/modal.js"></script> -->
 </body>
 
 </html>
