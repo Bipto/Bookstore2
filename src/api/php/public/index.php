@@ -36,23 +36,16 @@ $router->get('/books', function () {
     $parameters = [];
     parse_str($queryString, $parameters);
 
+    $title = $parameters['title'] ?? '';
+    $author = $parameters['author'] ?? '';
+
     $db = openDB();
 
-    if (isset($parameters['title'])) {
-        $pdo = $db->getPDO();
-        $sqlWhere = "WHERE title ILIKE '%" . $parameters['title'] . "%'";
-        $stmt = $pdo->prepare("SELECT * FROM bookstore.books {$sqlWhere}");
-        $result = $stmt->execute();
-        $data = $stmt->fetchAll();
-        echo json_encode($data);
-    } else {
-        $queryBuilder = QueryBuilder::table('bookstore.books')
-            ->select();
-
-        $result = $db->executeAndReturnAll($queryBuilder);
-
-        echo json_encode($result);
-    }
+    $pdo = $db->getPDO();
+    $stmt = $pdo->prepare("SELECT * FROM bookstore.books WHERE title ILIKE '%{$title}%' AND author ILIKE '%{$author}%'");
+    $result = $stmt->execute();
+    $data = $stmt->fetchAll();
+    echo json_encode($data);
 });
 
 $router->get('/books/{id}', function ($id) {

@@ -15,9 +15,15 @@ require_once '/var/www/shared/ajax.php';
             id="book-search"
             placeholder="Search by title..."
             autocomplete="off">
+
+        <label for="author-search">Search authors</label>
+
+        <input
+            type="search"
+            id="author-search"
+            placeholder="Search by author..."
+            autocomplete="off">
     </aside>
-
-
 
     <?php
 

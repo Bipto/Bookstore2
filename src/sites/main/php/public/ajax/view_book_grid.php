@@ -2,9 +2,10 @@
 
 require_once '/var/www/shared/api.php';
 
-$title = $_GET['title'] ?? null;
+$title = $_GET['title'] ?? '';
+$author = $_GET['author'] ?? '';
 
-$url = $title !== null ? "/books?title={$title}" : "/books";
+$url = $title !== null ? "/books?title={$title}&author={$author}" : "/books";
 
 $response = API::get($url);
 $results = json_decode($response, true);
