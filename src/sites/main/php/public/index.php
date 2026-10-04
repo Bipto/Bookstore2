@@ -29,6 +29,7 @@ session_start();
     require_once '/var/www/shared/menubar.php';
     require_once '/var/www/shared/router.php';
     require_once '/var/www/shared/ajax.php';
+    require_once '/var/www/shared/api.php';
 
     $links = [
         [
@@ -40,7 +41,19 @@ session_start();
         ]
     ];
 
-    $menubar = new Menubar($links);
+    $email = $_SESSION['email'] ?? '';
+    $email = urlencode($email);
+
+    $cartCount = 0;
+
+    $url = "/cart?email={$email}";
+    $response = json_decode(API::get($url), TRUE);
+    if ($response['success'] === true) {
+        $data = json_decode($response['data'], TRUE);
+        $cartCount = count($data['cart']);
+    }
+
+    $menubar = new Menubar($links, $cartCount);
     echo $menubar->build();
 
     $router = new Router();

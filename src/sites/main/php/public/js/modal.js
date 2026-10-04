@@ -95,8 +95,12 @@ function addToCart(id) {
   $.ajax({
     url: '/ajax/add_book_to_cart.php?book_id=' + id,
     type: 'GET',
-    success: function(html) {
+    success: function() {
       closeModal();
+
+      let count = parseInt($('#cart-count').text());
+      $('#cart-count').text(count + 1);
+      $('#cart-count').show();
     },
     error: function() {
       $('.page').html('<p>Something went wrong.</p>');

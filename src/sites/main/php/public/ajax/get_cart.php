@@ -92,6 +92,15 @@ if ($response['success'] == true) {
             .then(response => response.text())
             .then(html => {
                 document.getElementById('cart-content').innerHTML = html;
+
+                const count = parseInt($('#cart-count').text());
+                const newCount = count - 1;
+                $('#cart-count').text(newCount);
+
+                if (newCount === 0)
+                {
+                    $('#cart-count').hide();
+                }
             });
 
 

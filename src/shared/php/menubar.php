@@ -2,12 +2,7 @@
 
 class Menubar
 {
-    private array $links;
-
-    public function __construct(array $links)
-    {
-        $this->links = $links;
-    }
+    public function __construct(private array $links, private int $cartCount) {}
 
     public function build()
     {
@@ -47,25 +42,27 @@ class Menubar
 
         $loggedIn = isset($_SESSION['email']);
 
-        $html .= '
-    <div class="right-hand-menu">
-    <div class="cart">
-        <div class="cart-circle" id="cart-circle">
-            <i class="fa-solid fa-cart-shopping"></i>
-            <span class="dropdown-arrow-cart"></span>
+        $styleText = $this->cartCount === 0 ? 'style="display: none"' : '';
+
+        $html .= "
+    <div class='right-hand-menu'>
+    <div class='cart'>
+        <div class='cart-circle' id='cart-circle'>
+            <i class='fa-solid fa-cart-shopping'></i>
+            <span class='cart-count' id='cart-count' {$styleText}>{$this->cartCount}</span>
+            <span class='dropdown-arrow-cart'></span>
         </div>
 
-        <div class="menu-dropdown" id="cart-dropdown" style="width: 20em;">
-            <div id="cart-content">
+        <div class='menu-dropdown' id='cart-dropdown' style='width: 20em;'>
+            <div id='cart-content'>
             </div>
-            <div class="spinner-container" id="cart-spinner">
-                <div class="spinner">
+            <div class='spinner-container' id='cart-spinner'>
+                <div class='spinner'>
                 </div>
             </div>
         </div>
     </div>
-    
-    ';
+    ";
 
         $html .= '<div class="profile">';
 
