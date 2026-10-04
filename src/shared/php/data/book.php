@@ -4,7 +4,7 @@ class Book
 {
     public int $BookID;
     public string $Title;
-    public string $Author;
+    public int $Author;
     public string $Description;
     public string $Genre;
     public float $Price;

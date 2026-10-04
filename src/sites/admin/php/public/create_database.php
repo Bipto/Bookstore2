@@ -1,6 +1,37 @@
 <?php
 
 require_once '/var/www/shared/data/book.php';
+require_once '/var/www/shared/data/author.php';
+
+function insertAuthor(Author $author, PDO $conn)
+{
+    try {
+        $stmt = $conn->prepare(
+            "INSERT INTO bookstore.authors
+        (
+            name,
+            description,
+            image_path
+        )
+        VALUES
+        (
+            :name,
+            :description,
+            :image_path
+        )"
+        );
+
+        $stmt->execute([
+            'name' => $author->Name,
+            'description' => $author->Description,
+            'image_path' => $author->ImagePath
+        ]);
+
+        echo 'Inserted author: ' . $author->Name . '<br>';
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+}
 
 function insertBook(Book $book, PDO $conn)
 {
@@ -9,7 +40,7 @@ function insertBook(Book $book, PDO $conn)
             "INSERT INTO Bookstore.Books
         (
             title,
-            author,
+            author_id,
             book_description,
             genre,
             price,
@@ -19,7 +50,7 @@ function insertBook(Book $book, PDO $conn)
         VALUES
         (
             :title,
-            :author,
+            :author_id,
             :book_description,
             :genre,
             :price,
@@ -30,7 +61,7 @@ function insertBook(Book $book, PDO $conn)
 
         $stmt->execute([
             'title' => $book->Title,
-            'author' => $book->Author,
+            'author_id' => $book->Author,
             'book_description' => $book->Description,
             'genre' => $book->Genre,
             'price' => $book->Price,
@@ -44,12 +75,64 @@ function insertBook(Book $book, PDO $conn)
     }
 }
 
+function createAuthors(PDO $conn)
+{
+    $author1 = new Author();
+    $author1->Name = "J.R.R. Tolkien";
+    $author1->Description = "John Ronald Reuel Tolkien 3 January 1892 – 2 September 1973) was an English writer and academic philologist. He was the author of the high fantasy works The Hobbit (1937) and The Lord of the Rings (1954–1955).
+
+    From 1925 to 1945 Tolkien was the Rawlinson and Bosworth Professor of Anglo-Saxon and a Fellow of Pembroke College, both at the University of Oxford. He then moved within the same university to become the Merton Professor of English Language and Literature and Fellow of Merton College, and held these positions from 1945 until his retirement in 1959. Tolkien was a devout Catholic and a close friend of C. S. Lewis, a co-member of the Inklings, an informal literary discussion group. He was appointed a Commander of the Order of the British Empire by Elizabeth II on 28 March 1972.
+    
+    After Tolkien's death, his son Christopher published a series of works based on his father's extensive notes and unpublished manuscripts, including The Silmarillion. These, together with The Hobbit and The Lord of the Rings, form a connected body of tales, poems, fictional histories, invented languages, and literary essays about a fantasy world called Arda and, within it, Middle-earth. Between 1951 and 1955 Tolkien applied the term legendarium to the larger part of these writings.
+    
+    While many other authors had published works of fantasy before Tolkien, the tremendous success of The Hobbit and The Lord of the Rings ignited a profound interest in the fantasy genre and ultimately precipitated an avalanche of new fantasy books and authors. This has led to his popular identification as the \"father\" of modern fantasy literature. He is widely regarded as one of the most influential authors of all time.";
+    $author1->ImagePath = "";
+    insertAuthor($author1, $conn);
+
+    $author2 = new Author();
+    $author2->Name = "J.K. Rowling";
+    $author2->Description = "Joanne Rowling (born 31 July 1965), better known by her pen name J. K. Rowling, is a British author, philanthropist, producer, and screenwriter. She is best known for writing Harry Potter, a seven-volume series about a young wizard and the best-selling book series in history, with over 600 million copies sold. She also writes Cormoran Strike, an ongoing crime fiction series, under the alias Robert Galbraith.
+
+    Rowling conceived the idea for the Harry Potter series in 1990. The seven-year period that followed saw the death of her mother, the birth of her first child, divorce from her first husband, and relative poverty until the first novel in the series, Harry Potter and the Philosopher's Stone, was published in 1997. Six sequels followed, concluding with Harry Potter and the Deathly Hallows (2007). In 2008, Forbes named her the world's highest-paid author. The books have been translated into 85 languages and have spawned a global media franchise including films and video games. The series revived fantasy as a genre in the children's market, spawned a host of imitators, and inspired an active fandom. Critical reception has been more mixed. Many reviewers see Rowling's writing as conventional; some regard her portrayal of gender and social division as regressive. There were also religious debates over the Harry Potter series.
+    
+    Rowling has won many accolades for her work. She was named to the Order of the British Empire and was appointed a member of the Order of the Companions of Honour for services to literature and philanthropy. Harry Potter brought her wealth and recognition, which she has used to advance philanthropic endeavours and political causes. She established the Volant Charitable Trust in 2000, and co-founded the charity Lumos in 2005. Rowling's philanthropy has centred on medical causes and supporting at-risk women and children. Forbes has estimated that Rowling's total charitable giving between 2005 and 2025 exceeded US$250 million. She has also donated to the British Labour Party, and opposed Scottish independence and Brexit.
+    
+    Rowling has attracted criticism for trans-exclusionary positions she has taken from 2019 onwards, including opposition to gender self-identification and to allowing transgender women into women's toilets and changing rooms. She has supported and donated to the campaign group For Women Scotland, the plaintiffs in For Women Scotland Ltd v The Scottish Ministers.";
+
+    $author2->ImagePath = "";
+    insertAuthor($author2, $conn);
+
+    $author3 = new Author();
+    $author3->Name = "Suzanne Collins";
+    $author3->Description = "Suzanne Collins (born August 10, 1962)[2] is an American author and television writer who is best known as the author of the young adult dystopian fiction book series The Hunger Games. She is also the author of the children's fantasy series The Underland Chronicles.";
+    $author3->ImagePath = "";
+    insertAuthor($author3, $conn);
+
+    $author4 = new Author();
+    $author4->Name = "George R.R. Martin";
+    $author4->Description = "George Raymond Richard Martin (born George Raymond Martin, September 20, 1948), also known by the initials GRRM, is an American author, screenwriter, and television producer. Martin is best known as the author of the epic fantasy novel series A Song of Ice and Fire, which was adapted by HBO into the Primetime Emmy Award–winning television series Game of Thrones (2011–2019) and its prequel series House of the Dragon (2022–present). Martin also wrote a related series of novellas, Tales of Dunk and Egg, which have been adapted by HBO as A Knight of the Seven Kingdoms (2026–present). Outside of A Song of Ice and Fire and its related media, Martin helped create the Wild Cards anthology series and contributed worldbuilding for the video game Elden Ring (2022).
+
+    In 2005, Lev Grossman of Time called Martin \"the American Tolkien\", and in 2011, he was included on the annual Time 100 list of the most influential people in the world. He is a longtime resident of Santa Fe, New Mexico, where he helped fund Meow Wolf and owns the Jean Cocteau Cinema.";
+    $author4->ImagePath = "";
+    insertAuthor($author4, $conn);
+
+    $author5 = new Author();
+    $author5->Name = "George Orwell";
+    $author5->Description = "Eric Arthur Blair (25 June 1903 – 21 January 1950) was an English novelist, poet, essayist, journalist, and critic who wrote under the pen name of George Orwell. His work is characterised by lucid prose, social criticism, opposition to all totalitarianism (both authoritarian communism and fascism), and support of democratic socialism.
+
+    Orwell is best known for his allegorical novella Animal Farm (1945) and the dystopian novel Nineteen Eighty-Four (1949), although his works also encompass literary criticism, poetry, fiction and polemical journalism. His non-fiction works, including The Road to Wigan Pier (1937), documenting his experience of working-class life in industrial Northern England, and Homage to Catalonia (1938), an account of his experiences soldiering for the Republican faction of the Spanish Civil War (1936–1939), are as critically respected as his essays on politics, literature, language and culture.
+    
+    Orwell's work remains influential in both popular and political culture, with the adjective \"Orwellian\"—describing totalitarian and authoritarian social practices—becoming part of the English language, as are many of his neologisms, such as \"Big Brother\", \"Thought Police\", \"Room 101\", \"Newspeak\", \"memory hole\", \"doublethink\", and \"thoughtcrime\". In 2008, The Times named Orwell the second-greatest British writer since 1945.";
+    $author5->ImagePath = "";
+    insertAuthor($author5, $conn);
+}
+
 function createBooks(PDO $conn)
 {
     $book1 = new Book();
     $book1->BookID = 0;
     $book1->Title = "The Hobbit";
-    $book1->Author = "J.R.R Tolkien";
+    $book1->Author = 1;
     $book1->Genre = "Fantasy";
     $book1->Price = 7.99;
     $book1->StockCount = 30;
@@ -75,7 +158,7 @@ The work has never been out of print. Its ongoing legacy encompasses many adapta
     $book2 = new Book();
     $book2->BookID = 1;
     $book2->Title = "The Fellowship of the Ring";
-    $book2->Author = "J.R.R Tolkien";
+    $book2->Author = 1;
     $book2->Genre = "Fantasy";
     $book2->Price = 7.99;
     $book2->ImagePath = "fellowship_of_the_ring.png";
@@ -88,7 +171,7 @@ The volume consists of a foreword, in which the author discusses his writing of 
     $book3 = new Book();
     $book3->BookID = 2;
     $book3->Title = "The Two Towers";
-    $book3->Author = "J.R.R Tolkien";
+    $book3->Author = 1;
     $book3->Genre = "Fantasy";
     $book3->Price = 7.99;
     $book3->ImagePath = "the_two_towers.png";
@@ -99,7 +182,7 @@ The volume consists of a foreword, in which the author discusses his writing of 
     $book4 = new Book();
     $book4->BookID = 3;
     $book4->Title = "The Return of the King";
-    $book4->Author = "J.R.R Tolkien";
+    $book4->Author = 1;
     $book4->Genre = "Fantasy";
     $book4->Price = 7.99;
     $book4->ImagePath = "the_return_of_the_king.png";
@@ -110,7 +193,7 @@ The volume consists of a foreword, in which the author discusses his writing of 
     $book5 = new Book();
     $book5->BookID = 4;
     $book5->Title = "The Silmarillion";
-    $book5->Author = "J.R.R Tolkien";
+    $book5->Author = 1;
     $book5->Genre = "Fantasy";
     $book5->Price = 7.99;
     $book5->ImagePath = "the_silmarillion.png";
@@ -133,7 +216,7 @@ The Silmarillion received a generally poor reception on publication; it sold muc
     $book6 = new Book();
     $book6->BookID = 5;
     $book6->Title = "Unfinished Tales of Numenor and Middle-Earth";
-    $book6->Author = "J.R.R Tolkien";
+    $book6->Author = 1;
     $book6->Genre = "Fantasy";
     $book6->Price = 7.99;
     $book6->ImagePath = "unfinished_tales_of_numenor_middle_earth.jpg";
@@ -144,7 +227,7 @@ The Silmarillion received a generally poor reception on publication; it sold muc
     $book7 = new Book();
     $book7->BookID = 6;
     $book7->Title = "The Fall of Numenor";
-    $book7->Author = "J.R.R Tolkien";
+    $book7->Author = 1;
     $book7->Genre = "Fantasy";
     $book7->Price = 7.99;
     $book7->ImagePath = "fall_of_numenor.jpg";
@@ -155,7 +238,7 @@ The Silmarillion received a generally poor reception on publication; it sold muc
     $book8 = new Book();
     $book8->BookID = 7;
     $book8->Title = "Harry Potter and the Philosopher's Stone";
-    $book8->Author = "J.K. Rowling";
+    $book8->Author = 2;
     $book8->Genre = "Fantasy";
     $book8->Price = 7.99;
     $book8->ImagePath = "harry_potter_philosophers_stone.png";
@@ -175,7 +258,7 @@ The Harry Potter series has been used as a source of object lessons in education
     $book9 = new Book();
     $book9->BookID = 8;
     $book9->Title = "Harry Potter and the Chamber of Secrets";
-    $book9->Author = "J.K. Rowling";
+    $book9->Author = 2;
     $book9->Genre = "Fantasy";
     $book9->Price = 7.99;
     $book9->ImagePath = "harry_potter_chamber_of_secrets.png";
@@ -195,7 +278,7 @@ The film adaptation of the novel, released in 2002, became (at the time) the six
     $book10 = new Book();
     $book10->BookID = 9;
     $book10->Title = "Harry Potter and the Prisoner of Azkaban";
-    $book10->Author = "J.K. Rowling";
+    $book10->Author = 2;
     $book10->Genre = "Fantasy";
     $book10->Price = 7.99;
     $book10->ImagePath = "harry_potter_prisoner_of_azkaban.png";
@@ -212,7 +295,7 @@ The film adaptation of the novel was released in 2004, grossing more than $796 m
     $book11 = new Book();
     $book11->BookID = 10;
     $book11->Title = "Harry Potter and the Goblet of Fire";
-    $book11->Author = "J.K. Rowling";
+    $book11->Author = 2;
     $book11->Genre = "Fantasy";
     $book11->Price = 7.99;
     $book11->ImagePath = "harry_potter_goblet_of_fire.png";
@@ -226,7 +309,7 @@ The book was published in the United Kingdom by Bloomsbury and in the United Sta
     $book12 = new Book();
     $book12->BookID = 11;
     $book12->Title = "Harry Potter and the Order of the Phoenix";
-    $book12->Author = "J.K. Rowling";
+    $book12->Author = 2;
     $book12->Genre = "Fantasy";
     $book12->Price = 7.99;
     $book12->ImagePath = "harry_potter_order_of_the_phoenix.png";
@@ -240,7 +323,7 @@ Harry Potter and the Order of the Phoenix won several awards, including the Amer
     $book13 = new Book();
     $book13->BookID = 12;
     $book13->Title = "Harry Potter and the Half Blood Prince";
-    $book13->Author = "J.K. Rowling";
+    $book13->Author = 2;
     $book13->Genre = "Fantasy";
     $book13->Price = 7.99;
     $book13->ImagePath = "harry_potter_half_blood_prince.png";
@@ -257,7 +340,7 @@ Reviewers noted that the book had a darker tone than its predecessors, though it
     $book14 = new Book();
     $book14->BookID = 13;
     $book14->Title = "Harry Potter and the Deathly Hallows";
-    $book14->Author = "J.K. Rowling";
+    $book14->Author = 2;
     $book14->Genre = "Fantasy";
     $book14->Price = 7.99;
     $book14->ImagePath = "harry_potter_and_the_deathly_hallows.jpg";
@@ -273,7 +356,7 @@ A film adaptation of the novel was released in two parts: Harry Potter and the D
     $book15 = new Book();
     $book15->BookID = 14;
     $book15->Title = "The Hunger Games";
-    $book15->Author = "Suzanne Collins";
+    $book15->Author = 3;
     $book15->Genre = "Young Adult";
     $book15->Price = 7.99;
     $book15->ImagePath = "the_hunger_games.jpg";
@@ -299,7 +382,7 @@ A prequel novel, titled The Ballad of Songbirds and Snakes, about the early days
     $book16 = new Book();
     $book16->BookID = 15;
     $book16->Title = "The Hunger Games: Catching Fire";
-    $book16->Author = "Suzanne Collins";
+    $book16->Author = 3;
     $book16->Genre = "Young Adult";
     $book16->Price = 7.99;
     $book16->ImagePath = "the_hunger_games_catching_fire.jpg";
@@ -316,7 +399,7 @@ A film adaptation, The Hunger Games: Catching Fire, was released on November 22,
     $book17 = new Book();
     $book17->BookID = 16;
     $book17->Title = "The Hunger Games: Mockingjay";
-    $book17->Author = "Suzanne Collins";
+    $book17->Author = 3;
     $book17->Genre = "Young Adult";
     $book17->Price = 7.99;
     $book17->ImagePath = "the_hunger_games_mockingjay.jpg";
@@ -330,7 +413,7 @@ The hardcover and audiobook editions of Mockingjay were published by Scholastic 
     $book18 = new Book();
     $book18->BookID = 17;
     $book18->Title = "The Ballad of Songbirds and Snakes";
-    $book18->Author = "Suzanne Collins";
+    $book18->Author = 3;
     $book18->Genre = "Young Adult";
     $book18->Price = 7.99;
     $book18->ImagePath = "ballad_of_songbirds_and_snakes.jpg";
@@ -341,7 +424,7 @@ The hardcover and audiobook editions of Mockingjay were published by Scholastic 
     $book19 = new Book();
     $book19->BookID = 18;
     $book19->Title = "A Game of Thrones";
-    $book19->Author = "George R.R. Martin";
+    $book19->Author = 4;
     $book19->Genre = "Fantasy";
     $book19->Price = 12.50;
     $book19->ImagePath = "a_game_of_thrones.jpg";
@@ -352,7 +435,7 @@ The hardcover and audiobook editions of Mockingjay were published by Scholastic 
     $book20 = new Book();
     $book20->BookID = 19;
     $book20->Title = "A Clash of Kings";
-    $book20->Author = "George R.R. Martin";
+    $book20->Author = 4;
     $book20->Genre = "Fantasy";
     $book20->Price = 12.50;
     $book20->ImagePath = "a_clash_of_kings.jpg";
@@ -366,7 +449,7 @@ As a prophecy of doom cuts across the sky - a comet the colour of blood and flam
     $book21 = new Book();
     $book21->BookID = 20;
     $book21->Title = "A Storm of Swords: Part 1 Steel and Snow";
-    $book21->Author = "George R.R. Martin";
+    $book21->Author = 4;
     $book21->Genre = "Fantasy";
     $book21->Price = 12.50;
     $book21->ImagePath = "a_storm_of_swords_part_1.jpg";
@@ -383,7 +466,7 @@ Throughout Westeros, the war for the Iron Throne rages more fiercely than ever, 
     $book22 = new Book();
     $book22->BookID = 21;
     $book22->Title = "A Storm of Swords: Part 2 Blood and Gold";
-    $book22->Author = "George R.R. Martin";
+    $book22->Author = 4;
     $book22->Genre = "Fantasy";
     $book22->Price = 12.50;
     $book22->ImagePath = "a_storm_of_swords_part_2.jpg";
@@ -400,7 +483,7 @@ Meanwhile, across the ocean, Daenerys Stormborn, the last heir of the Dragon Kin
     $book23 = new Book();
     $book23->BookID = 22;
     $book23->Title = "A Feast for Crows";
-    $book23->Author = "George R.R. Martin";
+    $book23->Author = 4;
     $book23->Genre = "Fantasy";
     $book23->Price = 12.50;
     $book23->ImagePath = "a_feast_for_crows.jpg";
@@ -417,7 +500,7 @@ From the icy north, where Others threaten the Wall, apprentice Maester Samwell T
     $book24 = new Book();
     $book24->BookID = 23;
     $book24->Title = "A Dance With Dragons: Part 1 Dreams and Dust";
-    $book24->Author = "George R.R. Martin";
+    $book24->Author = 4;
     $book24->Genre = "Fantasy";
     $book24->Price = 12.50;
     $book24->ImagePath = "a_dance_with_dragons_part_1.jpg";
@@ -434,7 +517,7 @@ To the north lies the great Wall of ice and stone - a structure only as strong a
     $book25 = new Book();
     $book25->BookID = 24;
     $book25->Title = "A Dance With Dragons: Part 2 After the Feast";
-    $book25->Author = "George R.R. Martin";
+    $book25->Author = 4;
     $book25->Genre = "Fantasy";
     $book25->Price = 12.50;
     $book25->ImagePath = "a_dance_with_dragons_part_2.jpg";
@@ -451,7 +534,7 @@ On all sides bitter conflicts are reigniting, played out by a grand cast of outl
     $book26 = new Book();
     $book26->BookID = 24;
     $book26->Title = "Nineteen Eighty-Four";
-    $book26->Author = "George Orwell";
+    $book26->Author = 5;
     $book26->Genre = "Political Fiction";
     $book26->Price = 7.99;
     $book26->ImagePath = "1984.jpg";
@@ -493,15 +576,27 @@ try {
     ");
 
     $pdo->exec("
+        CREATE TABLE IF NOT EXISTS bookstore.authors(
+            author_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            name VARCHAR(150) NOT NULL UNIQUE,
+            description VARCHAR NOT NULL,
+            image_path VARCHAR(150)
+        )
+    ");
+    echo 'Created authors table<br>';
+    createAuthors($pdo);
+
+    $pdo->exec("
         CREATE TABLE IF NOT EXISTS bookstore.books (
             book_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             title VARCHAR(50) NOT NULL UNIQUE,
-            author VARCHAR(50) NOT NULL,
+            author_id INTEGER NOT NULL,
             book_description TEXT NOT NULL,
             genre VARCHAR(30) NOT NULL,
             price DECIMAL(10,2) NOT NULL,
             stock_count INTEGER NOT NULL,
-            image_path VARCHAR(150)
+            image_path VARCHAR(150),
+            FOREIGN KEY (author_id) REFERENCES bookstore.authors(author_id)
         )
     ");
 

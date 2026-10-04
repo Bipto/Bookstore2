@@ -42,20 +42,57 @@ $router->get('/books', function () {
     $db = openDB();
 
     $pdo = $db->getPDO();
-    $stmt = $pdo->prepare("SELECT * FROM bookstore.books WHERE title ILIKE '%{$title}%' AND author ILIKE '%{$author}%'");
+    $stmt = $pdo->prepare("
+            SELECT
+            b.book_id,
+            b.title,
+            a.name,
+            b.book_description,
+            b.genre,
+            b.price,
+            b.stock_count,
+            b.image_path
+        FROM bookstore.books AS b
+        INNER JOIN bookstore.authors AS a
+            ON b.author_id = a.author_id
+        WHERE b.title ILIKE '%{$title}%'
+        AND a.name ILIKE '%{$author}%';
+    ");
     $result = $stmt->execute();
     $data = $stmt->fetchAll();
     echo json_encode($data);
 });
 
 $router->get('/books/{id}', function ($id) {
-    $db = openDB();
+    /* $db = openDB();
     $queryBuilder = QueryBuilder::table('bookstore.books')
         ->select()
         ->where(['book_id' => $id]);
 
     $result = $db->executeAndReturnOne($queryBuilder);
-    echo json_encode($result);
+    echo json_encode($result); */
+
+    $db = openDB();
+
+    $pdo = $db->getPDO();
+    $stmt = $pdo->prepare("
+            SELECT
+            b.book_id,
+            b.title,
+            a.name AS author,
+            b.book_description,
+            b.genre,
+            b.price,
+            b.stock_count,
+            b.image_path
+        FROM bookstore.books AS b
+        INNER JOIN bookstore.authors AS a
+            ON b.author_id = a.author_id
+        WHERE b.book_id = :book_id
+    ");
+    $result = $stmt->execute(['book_id' => $id]);
+    $data = $stmt->fetch();
+    echo json_encode($data);
 });
 
 $router->post(
@@ -164,7 +201,7 @@ $router->get(
         $email = $_GET['email'];
 
         $stmt = $pdo->prepare('
-            SELECT cart_item_id, title, author, price, image_path, quantity
+            SELECT cart_item_id, title, a.name, price, b.image_path, quantity
             FROM bookstore.books AS b
             INNER JOIN bookstore.cart_items AS ci
                 ON ci.book_id = b.book_id
@@ -172,6 +209,8 @@ $router->get(
                 ON c.cart_id = ci.cart_id
             INNER JOIN bookstore.users AS u
                 ON u.user_id = c.user_id
+            INNER JOIN bookstore.authors AS a
+                ON a.author_id = b.author_id
             WHERE u.email = :email
         ');
 
