@@ -2,7 +2,11 @@
 
 require_once '/var/www/shared/api.php';
 
-$response = API::get('/books');
+$title = $_GET['title'] ?? null;
+
+$url = $title !== null ? "/books?title={$title}" : "/books";
+
+$response = API::get($url);
 $results = json_decode($response, true);
 
 if ($results['success']) {
@@ -58,56 +62,9 @@ if ($results['success']) {
 
 
         <?php endforeach; ?>
-
     </div>
-
-    <div id="book-modal" class="book-modal" hidden>
-
-        <div class="book-modal-overlay"></div>
-
-        <div
-            class="book-modal-content"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="book-modal-title">
-
-            <header class="book-modal-header">
-                <div id="book-modal-title"></div>
-
-                <button
-                    id="modal-close"
-                    class="modal-close"
-                    type="button"
-                    aria-label="Close">
-                    &times;
-                </button>
-            </header>
-
-            <main id="book-modal-body" class="book-modal-body">
-                <div id="book-modal-spinner" class="modal-spinner">
-                    <div class="spinner"></div>
-                </div>
-            </main>
-
-            <footer class="book-modal-footer" id="book-modal-footer">
-            </footer>
-
-        </div>
-
-    </div>
-
-
-
-
-
-    <style>
-
-    </style>
-
-    <script src='/js/modal.js'></script>
-
-
 <?php
+
 
 } else {
 

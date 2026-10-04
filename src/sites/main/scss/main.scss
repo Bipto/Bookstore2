@@ -1028,3 +1028,29 @@ input {
         }
     }
 }
+
+.book-catalogue {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+.book-filters {
+    position: sticky;
+    top: 20px;
+    margin-left: 1em;
+    margin-top: 1em;
+}
+
+.book-filters input {
+    width: 100%;
+    padding: 10px 12px;
+    box-sizing: border-box;
+}
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 25px;
+}

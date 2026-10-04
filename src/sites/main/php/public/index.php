@@ -57,9 +57,7 @@ session_start();
     echo $menubar->build();
 
     $router = new Router();
-    $router->get('/', function () {
-        echo AJAX::call('/ajax/view_book_grid.php');
-    });
+    $router->get('/', '/var/www/sites/main/private/pages/main.php');
     $router->get('/books', '/var/www/sites/main/private/pages/books.php');
     $router->get('/categories', '/var/www/sites/main/private/pages/categories.php');
     $router->get('/about', '/var/www/sites/main/private/pages/about.php');
@@ -82,7 +80,6 @@ session_start();
     ?>
 
     <script src="/js/menubar.js"></script>
-    <!-- <script src="/js/modal.js"></script> -->
 </body>
 
 </html>

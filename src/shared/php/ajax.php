@@ -5,7 +5,7 @@ class AJAX
     public static function call(string $url): string
     {
         return "
-        <div class='page'>
+        <div class='page' id='page-content'>
             <div class='spinner-container'>
 
             <div class='spinner'>

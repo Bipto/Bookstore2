@@ -31,13 +31,28 @@ function openDB(): RelationalDatabase
 
 $router = new Router();
 $router->get('/books', function () {
+
+    $queryString = $_SERVER['QUERY_STRING'];
+    $parameters = [];
+    parse_str($queryString, $parameters);
+
     $db = openDB();
-    $queryBuilder = QueryBuilder::table('bookstore.books')
-        ->select();
 
-    $result = $db->executeAndReturnAll($queryBuilder);
+    if (isset($parameters['title'])) {
+        $pdo = $db->getPDO();
+        $sqlWhere = "WHERE title ILIKE '%" . $parameters['title'] . "%'";
+        $stmt = $pdo->prepare("SELECT * FROM bookstore.books {$sqlWhere}");
+        $result = $stmt->execute();
+        $data = $stmt->fetchAll();
+        echo json_encode($data);
+    } else {
+        $queryBuilder = QueryBuilder::table('bookstore.books')
+            ->select();
 
-    echo json_encode($result);
+        $result = $db->executeAndReturnAll($queryBuilder);
+
+        echo json_encode($result);
+    }
 });
 
 $router->get('/books/{id}', function ($id) {
