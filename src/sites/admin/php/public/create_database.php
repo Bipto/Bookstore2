@@ -2,6 +2,34 @@
 
 require_once '/var/www/shared/data/book.php';
 require_once '/var/www/shared/data/author.php';
+require_once '/var/www/shared/data/genre.php';
+
+function insertGenre(Genre $genre, PDO $conn)
+{
+    try {
+        $stmt = $conn->prepare(
+            "INSERT INTO bookstore.genres
+        (
+            name,
+            description
+        )
+        VALUES
+        (
+            :name,
+            :description
+        )"
+        );
+
+        $stmt->execute([
+            'name' => $genre->name,
+            'description' => $genre->description
+        ]);
+
+        echo 'Inserted genre: ' . $genre->name . '<br>';
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+}
 
 function insertAuthor(Author $author, PDO $conn)
 {
@@ -73,6 +101,19 @@ function insertBook(Book $book, PDO $conn)
     } catch (Exception $e) {
         echo $e->getMessage();
     }
+}
+
+function createGenres(PDO $conn)
+{
+    $genre1 = new Genre(
+        "Fantasy",
+        "Fantasy is a genre of speculative fiction that involves supernatural or magical elements, often including completely imaginary realms and creatures.
+
+The genre's roots lie in fantasy literature and drama. From the twentieth century onward, it has expanded into various media, including film, television, graphic novels, manga, animation, and video games.
+
+The expression fantastic literature is often used for this genre by Anglophone literary critics. An archaic spelling for the term is phantasy."
+    );
+    insertGenre($genre1, $conn);
 }
 
 function createAuthors(PDO $conn)
@@ -576,6 +617,27 @@ try {
     ");
 
     $pdo->exec("
+        CREATE TABLE IF NOT EXISTS bookstore.genres(
+            genre_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            name VARCHAR(150) NOT NULL UNIQUE,
+            description VARCHAR NOT NULL
+        )
+    ");
+    echo 'Created genres table<br>';
+
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS bookstore.book_genres(
+            book_id INTEGER,
+            genre_id INTEGER,
+            PRIMARY KEY (book_id, genre_id),
+            FOREIGN KEY (book_id) REFERENCES bookstore.books(book_id),
+            FOREIGN KEY (genre_id) REFERENCES bookstore.genres(genre_id)
+        )
+    ");
+    echo 'Created book_genres table<br>';
+    createGenres($pdo);
+
+    $pdo->exec("
         CREATE TABLE IF NOT EXISTS bookstore.authors(
             author_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
             name VARCHAR(150) NOT NULL UNIQUE,
@@ -599,7 +661,6 @@ try {
             FOREIGN KEY (author_id) REFERENCES bookstore.authors(author_id)
         )
     ");
-
     echo 'Created books table<br>';
     createBooks($pdo);
 
