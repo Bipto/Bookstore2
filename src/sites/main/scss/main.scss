@@ -1033,7 +1033,7 @@ input {
     display: grid;
     grid-template-columns: 240px 1fr;
     gap: 30px;
-    align-items: start;
+    align-items: stretch;
 }
 
 .book-filters {
