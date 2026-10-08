@@ -260,7 +260,7 @@ $router->get(
         $email = $_GET['email'];
 
         $stmt = $pdo->prepare('
-            SELECT cart_item_id, title, a.name, price, b.image_path, quantity
+            SELECT cart_item_id, title, a.name AS author, price, b.image_path, quantity
             FROM bookstore.books AS b
             INNER JOIN bookstore.cart_items AS ci
                 ON ci.book_id = b.book_id
