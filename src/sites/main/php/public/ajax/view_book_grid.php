@@ -2,8 +2,8 @@
 
 require_once '/var/www/shared/api.php';
 
-$title = $_GET['title'] ?? '';
-$author = $_GET['author'] ?? '';
+$title = urlencode($_GET['title'] ?? '');
+$author = urlencode($_GET['author']  ?? '');
 
 $url = $title !== null ? "/books?title={$title}&author={$author}" : "/books";
 
@@ -38,6 +38,7 @@ if ($results['success']) {
                 ENT_QUOTES,
                 'UTF-8'
             );
+
             ?>
 
             <button
