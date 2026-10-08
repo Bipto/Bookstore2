@@ -70,7 +70,6 @@ function insertBook(Book $book, PDO $conn)
             title,
             author_id,
             book_description,
-            genre,
             price,
             stock_count,
             image_path
@@ -80,7 +79,6 @@ function insertBook(Book $book, PDO $conn)
             :title,
             :author_id,
             :book_description,
-            :genre,
             :price,
             :stock_count,
             :image_path
@@ -91,11 +89,35 @@ function insertBook(Book $book, PDO $conn)
             'title' => $book->Title,
             'author_id' => $book->Author,
             'book_description' => $book->Description,
-            'genre' => $book->Genre,
             'price' => $book->Price,
             'stock_count' => $book->StockCount,
             'image_path' => $book->ImagePath
         ]);
+
+        $bookId = $conn->lastInsertId();
+
+        $genreCount = count($book->Genres);
+        if ($genreCount > 0) {
+            $stmt = $conn->prepare(
+                "INSERT INTO bookstore.book_genres
+            (
+                book_id,
+                genre_id
+            )
+            VALUES
+            (
+                :book_id,
+                :genre_id
+            )"
+            );
+
+            foreach ($book->Genres as $genre) {
+                $stmt->execute([
+                    'book_id' => $bookId,
+                    'genre_id' => $genre
+                ]);
+            }
+        }
 
         echo 'Inserted book: ' . $book->Title . '<br>';
     } catch (Exception $e) {
@@ -114,6 +136,42 @@ The genre's roots lie in fantasy literature and drama. From the twentieth centur
 The expression fantastic literature is often used for this genre by Anglophone literary critics. An archaic spelling for the term is phantasy."
     );
     insertGenre($genre1, $conn);
+
+    $genre2 = new Genre(
+        "Children's Fantasy",
+        "Children's fantasy is a subgenre of fantasy literature intended for young readers. It may also refer to fantasy read by children, regardless of the intended audience.
+
+        The genre has roots in folk tales such as Aesop's Fables that were not originally intended for children: before the Victorian era, fairytales were perceived as immoral and ill-suited for children's minds. A market for children's fantasy was established in Britain in the 19th century, leading to works such as Lewis Carroll's Alice's Adventures in Wonderland and Edith Nesbit's Five Children series; the genre also developed in America, exemplified by L. Frank Baum's The Wonderful Wizard of Oz. Of the authors of this period, Nesbit is commonly cited as the creator of modern children's fantasy.
+        
+        The golden age of children's fantasy, in scholars' view, occurred in the mid-20th century when the genre was influenced by J. R. R. Tolkien's The Hobbit and C. S. Lewis's The Chronicles of Narnia. In the vein of Narnia, the post-war period saw rising stakes and manifestations of evil in the works of Susan Cooper and Alan Garner. Tolkien's Middle-earth led to mythopoeic fantasy in the 1970s, from authors such as Ursula K. Le Guin and Robin McKinley.[12] Another influential writer of this period was Diana Wynne Jones, who wrote both medievalist and realist fantasies.
+        
+        In the late 1990s, J. K. Rowling's Harry Potter led to a commercial boom in the genre, reviving older authors' careers and spawning many imitators. A concurrent success is Philip Pullman's His Dark Materials, a darker, realistic fantasy that led to a corresponding trend in a new young adult market."
+    );
+    insertGenre($genre2, $conn);
+
+    $genre3 = new Genre(
+        "Young Adults",
+        "Young adult literature (YA) is literature written for readers aged 12 to 18. It may include themes found in adult fiction, such as family dysfunction, substance abuse, alcoholism, and sexuality.
+
+        The earliest known use of term young adult occurred in 1942. Librarians developed the category of young adult literature to help bridge the gap between children's literature and adult literature. According to a study conducted in 2023, 55% of young adult literature consumers were over 18 years of age. 78% of adult consumers purchased with the intent to read themselves. Of these adult buyers, 51% were between ages 30 and 44. This highlights the fact that readers of young adult literature are often adults."
+    );
+    insertGenre($genre3, $conn);
+
+    $genre4 = new Genre(
+        "Dystopian",
+        "A dystopia is a society characterized by a focus on that which is contrary to the author's ethos, such as mass poverty, public mistrust and suspicion, a police state or oppression. Most authors of dystopian fiction explore at least one reason why things are that way, often as an analogy for similar issues in the real world. Dystopian literature serves to \"provide fresh perspectives on problematic social and political practices that might otherwise be taken for granted or considered natural and inevitable\". Some dystopias claim to be utopias. Samuel Butler's Erewhon can be seen as a dystopia because of the way sick people are punished as criminals while thieves are \"cured\" in hospitals, which the inhabitants of Erewhon see as natural and right, i.e., utopian (as mocked in Voltaire's Candide).
+
+        Dystopias usually extrapolate elements of contemporary society, and thus can be read as political warnings.
+        
+        Eschatological literature is a form of literature that can go hand-in-hand with dystopian literature. This is a form of literature that specifically focuses on some form of apocalypse, such as the collapse of a society, the end of an era of human history, or the end of the world itself."
+    );
+    insertGenre($genre4, $conn);
+
+    $genre5 = new Genre(
+        "High Fantasy",
+        "High fantasy, or epic fantasy, is a subgenre of fantasy defined by the epic nature of its setting or by the epic stature of its characters, themes, or plot. High fantasy is usually set in an alternative, fictional (\"secondary\") world, rather than the \"real\" or \"primary\" world. This secondary world is usually internally consistent, and often quite developed, but its rules differ from those of the primary world. By contrast, low fantasy is characterized by being set on Earth, the rational primary or \"real world\", upon which the non-rational supernatural or fantasy elements intrude."
+    );
+    insertGenre($genre5, $conn);
 }
 
 function createAuthors(PDO $conn)
@@ -174,7 +232,7 @@ function createBooks(PDO $conn)
     $book1->BookID = 0;
     $book1->Title = "The Hobbit";
     $book1->Author = 1;
-    $book1->Genre = "Fantasy";
+    $book1->Genres = [2, 5];
     $book1->Price = 7.99;
     $book1->StockCount = 30;
     $book1->ImagePath = "the_hobbit.jpg";
@@ -200,7 +258,7 @@ The work has never been out of print. Its ongoing legacy encompasses many adapta
     $book2->BookID = 1;
     $book2->Title = "The Fellowship of the Ring";
     $book2->Author = 1;
-    $book2->Genre = "Fantasy";
+    $book2->Genres = [5];
     $book2->Price = 7.99;
     $book2->ImagePath = "fellowship_of_the_ring.png";
     $book2->StockCount = 30;
@@ -213,7 +271,7 @@ The volume consists of a foreword, in which the author discusses his writing of 
     $book3->BookID = 2;
     $book3->Title = "The Two Towers";
     $book3->Author = 1;
-    $book3->Genre = "Fantasy";
+    $book3->Genres = [5];
     $book3->Price = 7.99;
     $book3->ImagePath = "the_two_towers.png";
     $book3->StockCount = 30;
@@ -224,7 +282,7 @@ The volume consists of a foreword, in which the author discusses his writing of 
     $book4->BookID = 3;
     $book4->Title = "The Return of the King";
     $book4->Author = 1;
-    $book4->Genre = "Fantasy";
+    $book4->Genres = [5];
     $book4->Price = 7.99;
     $book4->ImagePath = "the_return_of_the_king.png";
     $book4->StockCount = 30;
@@ -235,7 +293,7 @@ The volume consists of a foreword, in which the author discusses his writing of 
     $book5->BookID = 4;
     $book5->Title = "The Silmarillion";
     $book5->Author = 1;
-    $book5->Genre = "Fantasy";
+    $book5->Genres = [5];
     $book5->Price = 7.99;
     $book5->ImagePath = "the_silmarillion.png";
     $book5->StockCount = 30;
@@ -258,7 +316,7 @@ The Silmarillion received a generally poor reception on publication; it sold muc
     $book6->BookID = 5;
     $book6->Title = "Unfinished Tales of Numenor and Middle-Earth";
     $book6->Author = 1;
-    $book6->Genre = "Fantasy";
+    $book6->Genres = [5];
     $book6->Price = 7.99;
     $book6->ImagePath = "unfinished_tales_of_numenor_middle_earth.jpg";
     $book6->StockCount = 30;
@@ -269,7 +327,7 @@ The Silmarillion received a generally poor reception on publication; it sold muc
     $book7->BookID = 6;
     $book7->Title = "The Fall of Numenor";
     $book7->Author = 1;
-    $book7->Genre = "Fantasy";
+    $book7->Genres = [5];
     $book7->Price = 7.99;
     $book7->ImagePath = "fall_of_numenor.jpg";
     $book7->StockCount = 30;
@@ -280,7 +338,7 @@ The Silmarillion received a generally poor reception on publication; it sold muc
     $book8->BookID = 7;
     $book8->Title = "Harry Potter and the Philosopher's Stone";
     $book8->Author = 2;
-    $book8->Genre = "Fantasy";
+    //$book8->Genre = "Fantasy";
     $book8->Price = 7.99;
     $book8->ImagePath = "harry_potter_philosophers_stone.png";
     $book8->StockCount = 30;
@@ -300,7 +358,7 @@ The Harry Potter series has been used as a source of object lessons in education
     $book9->BookID = 8;
     $book9->Title = "Harry Potter and the Chamber of Secrets";
     $book9->Author = 2;
-    $book9->Genre = "Fantasy";
+    //$book9->Genre = "Fantasy";
     $book9->Price = 7.99;
     $book9->ImagePath = "harry_potter_chamber_of_secrets.png";
     $book9->StockCount = 30;
@@ -320,7 +378,7 @@ The film adaptation of the novel, released in 2002, became (at the time) the six
     $book10->BookID = 9;
     $book10->Title = "Harry Potter and the Prisoner of Azkaban";
     $book10->Author = 2;
-    $book10->Genre = "Fantasy";
+    //$book10->Genre = "Fantasy";
     $book10->Price = 7.99;
     $book10->ImagePath = "harry_potter_prisoner_of_azkaban.png";
     $book10->StockCount = 30;
@@ -337,7 +395,7 @@ The film adaptation of the novel was released in 2004, grossing more than $796 m
     $book11->BookID = 10;
     $book11->Title = "Harry Potter and the Goblet of Fire";
     $book11->Author = 2;
-    $book11->Genre = "Fantasy";
+    //$book11->Genre = "Fantasy";
     $book11->Price = 7.99;
     $book11->ImagePath = "harry_potter_goblet_of_fire.png";
     $book11->StockCount = 30;
@@ -351,7 +409,7 @@ The book was published in the United Kingdom by Bloomsbury and in the United Sta
     $book12->BookID = 11;
     $book12->Title = "Harry Potter and the Order of the Phoenix";
     $book12->Author = 2;
-    $book12->Genre = "Fantasy";
+    //$book12->Genre = "Fantasy";
     $book12->Price = 7.99;
     $book12->ImagePath = "harry_potter_order_of_the_phoenix.png";
     $book12->StockCount = 30;
@@ -365,7 +423,7 @@ Harry Potter and the Order of the Phoenix won several awards, including the Amer
     $book13->BookID = 12;
     $book13->Title = "Harry Potter and the Half Blood Prince";
     $book13->Author = 2;
-    $book13->Genre = "Fantasy";
+    //$book13->Genre = "Fantasy";
     $book13->Price = 7.99;
     $book13->ImagePath = "harry_potter_half_blood_prince.png";
     $book13->StockCount = 30;
@@ -382,7 +440,7 @@ Reviewers noted that the book had a darker tone than its predecessors, though it
     $book14->BookID = 13;
     $book14->Title = "Harry Potter and the Deathly Hallows";
     $book14->Author = 2;
-    $book14->Genre = "Fantasy";
+    //$book14->Genre = "Fantasy";
     $book14->Price = 7.99;
     $book14->ImagePath = "harry_potter_and_the_deathly_hallows.jpg";
     $book14->StockCount = 30;
@@ -398,7 +456,7 @@ A film adaptation of the novel was released in two parts: Harry Potter and the D
     $book15->BookID = 14;
     $book15->Title = "The Hunger Games";
     $book15->Author = 3;
-    $book15->Genre = "Young Adult";
+    //$book15->Genre = "Young Adult";
     $book15->Price = 7.99;
     $book15->ImagePath = "the_hunger_games.jpg";
     $book15->StockCount = 30;
@@ -424,7 +482,7 @@ A prequel novel, titled The Ballad of Songbirds and Snakes, about the early days
     $book16->BookID = 15;
     $book16->Title = "The Hunger Games: Catching Fire";
     $book16->Author = 3;
-    $book16->Genre = "Young Adult";
+    //$book16->Genre = "Young Adult";
     $book16->Price = 7.99;
     $book16->ImagePath = "the_hunger_games_catching_fire.jpg";
     $book16->StockCount = 30;
@@ -441,7 +499,7 @@ A film adaptation, The Hunger Games: Catching Fire, was released on November 22,
     $book17->BookID = 16;
     $book17->Title = "The Hunger Games: Mockingjay";
     $book17->Author = 3;
-    $book17->Genre = "Young Adult";
+    //$book17->Genre = "Young Adult";
     $book17->Price = 7.99;
     $book17->ImagePath = "the_hunger_games_mockingjay.jpg";
     $book17->StockCount = 30;
@@ -455,7 +513,7 @@ The hardcover and audiobook editions of Mockingjay were published by Scholastic 
     $book18->BookID = 17;
     $book18->Title = "The Ballad of Songbirds and Snakes";
     $book18->Author = 3;
-    $book18->Genre = "Young Adult";
+    //$book18->Genre = "Young Adult";
     $book18->Price = 7.99;
     $book18->ImagePath = "ballad_of_songbirds_and_snakes.jpg";
     $book18->StockCount = 30;
@@ -466,7 +524,7 @@ The hardcover and audiobook editions of Mockingjay were published by Scholastic 
     $book19->BookID = 18;
     $book19->Title = "A Game of Thrones";
     $book19->Author = 4;
-    $book19->Genre = "Fantasy";
+    //$book19->Genre = "Fantasy";
     $book19->Price = 12.50;
     $book19->ImagePath = "a_game_of_thrones.jpg";
     $book19->StockCount = 30;
@@ -477,7 +535,7 @@ The hardcover and audiobook editions of Mockingjay were published by Scholastic 
     $book20->BookID = 19;
     $book20->Title = "A Clash of Kings";
     $book20->Author = 4;
-    $book20->Genre = "Fantasy";
+    //$book20->Genre = "Fantasy";
     $book20->Price = 12.50;
     $book20->ImagePath = "a_clash_of_kings.jpg";
     $book20->StockCount = 30;
@@ -491,7 +549,7 @@ As a prophecy of doom cuts across the sky - a comet the colour of blood and flam
     $book21->BookID = 20;
     $book21->Title = "A Storm of Swords: Part 1 Steel and Snow";
     $book21->Author = 4;
-    $book21->Genre = "Fantasy";
+    //$book21->Genre = "Fantasy";
     $book21->Price = 12.50;
     $book21->ImagePath = "a_storm_of_swords_part_1.jpg";
     $book21->StockCount = 30;
@@ -508,7 +566,7 @@ Throughout Westeros, the war for the Iron Throne rages more fiercely than ever, 
     $book22->BookID = 21;
     $book22->Title = "A Storm of Swords: Part 2 Blood and Gold";
     $book22->Author = 4;
-    $book22->Genre = "Fantasy";
+    //$book22->Genre = "Fantasy";
     $book22->Price = 12.50;
     $book22->ImagePath = "a_storm_of_swords_part_2.jpg";
     $book22->StockCount = 30;
@@ -525,7 +583,7 @@ Meanwhile, across the ocean, Daenerys Stormborn, the last heir of the Dragon Kin
     $book23->BookID = 22;
     $book23->Title = "A Feast for Crows";
     $book23->Author = 4;
-    $book23->Genre = "Fantasy";
+    //$book23->Genre = "Fantasy";
     $book23->Price = 12.50;
     $book23->ImagePath = "a_feast_for_crows.jpg";
     $book23->StockCount = 30;
@@ -542,7 +600,7 @@ From the icy north, where Others threaten the Wall, apprentice Maester Samwell T
     $book24->BookID = 23;
     $book24->Title = "A Dance With Dragons: Part 1 Dreams and Dust";
     $book24->Author = 4;
-    $book24->Genre = "Fantasy";
+    //$book24->Genre = "Fantasy";
     $book24->Price = 12.50;
     $book24->ImagePath = "a_dance_with_dragons_part_1.jpg";
     $book24->StockCount = 30;
@@ -559,7 +617,7 @@ To the north lies the great Wall of ice and stone - a structure only as strong a
     $book25->BookID = 24;
     $book25->Title = "A Dance With Dragons: Part 2 After the Feast";
     $book25->Author = 4;
-    $book25->Genre = "Fantasy";
+    //$book25->Genre = "Fantasy";
     $book25->Price = 12.50;
     $book25->ImagePath = "a_dance_with_dragons_part_2.jpg";
     $book25->StockCount = 30;
@@ -576,7 +634,7 @@ On all sides bitter conflicts are reigniting, played out by a grand cast of outl
     $book26->BookID = 24;
     $book26->Title = "Nineteen Eighty-Four";
     $book26->Author = 5;
-    $book26->Genre = "Political Fiction";
+    //$book26->Genre = "Political Fiction";
     $book26->Price = 7.99;
     $book26->ImagePath = "1984.jpg";
     $book26->StockCount = 30;
@@ -613,6 +671,10 @@ try {
     echo "Connected successfully!<br>";
 
     $pdo->exec("
+        DROP SCHEMA bookstore CASCADE
+    ");
+
+    $pdo->exec("
         CREATE SCHEMA IF NOT EXISTS bookstore
     ");
 
@@ -626,6 +688,30 @@ try {
     echo 'Created genres table<br>';
 
     $pdo->exec("
+    CREATE TABLE IF NOT EXISTS bookstore.authors(
+        author_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        name VARCHAR(150) NOT NULL UNIQUE,
+        description VARCHAR NOT NULL,
+        image_path VARCHAR(150)
+    )
+");
+    echo 'Created authors table<br>';
+
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS bookstore.books (
+            book_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            title VARCHAR(50) NOT NULL UNIQUE,
+            author_id INTEGER NOT NULL,
+            book_description TEXT NOT NULL,
+            price DECIMAL(10,2) NOT NULL,
+            stock_count INTEGER NOT NULL,
+            image_path VARCHAR(150),
+            FOREIGN KEY (author_id) REFERENCES bookstore.authors(author_id)
+        )
+    ");
+    echo 'Created books table<br>';
+
+    $pdo->exec("
         CREATE TABLE IF NOT EXISTS bookstore.book_genres(
             book_id INTEGER,
             genre_id INTEGER,
@@ -635,34 +721,6 @@ try {
         )
     ");
     echo 'Created book_genres table<br>';
-    createGenres($pdo);
-
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS bookstore.authors(
-            author_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            name VARCHAR(150) NOT NULL UNIQUE,
-            description VARCHAR NOT NULL,
-            image_path VARCHAR(150)
-        )
-    ");
-    echo 'Created authors table<br>';
-    createAuthors($pdo);
-
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS bookstore.books (
-            book_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            title VARCHAR(50) NOT NULL UNIQUE,
-            author_id INTEGER NOT NULL,
-            book_description TEXT NOT NULL,
-            genre VARCHAR(30) NOT NULL,
-            price DECIMAL(10,2) NOT NULL,
-            stock_count INTEGER NOT NULL,
-            image_path VARCHAR(150),
-            FOREIGN KEY (author_id) REFERENCES bookstore.authors(author_id)
-        )
-    ");
-    echo 'Created books table<br>';
-    createBooks($pdo);
 
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS bookstore.users (
@@ -696,6 +754,10 @@ try {
         )
     ");
     echo 'Created cart_items table<br>';
+
+    createGenres($pdo);
+    createAuthors($pdo);
+    createBooks($pdo);
 } catch (PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
 }

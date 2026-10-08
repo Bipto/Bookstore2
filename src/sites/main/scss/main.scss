@@ -683,33 +683,99 @@ body {
     flex-direction: column;
     align-items: center;
 
+    width: min(100% - 2rem, 900px);
+
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+
     text-align: center;
 
-    gap: 10px;
+    gap: 1rem;
+}
 
-    padding-left: 5rem;
-    padding-right: 5rem;
+.view-book-genres {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+
+    margin-bottom: 0.5rem;
+
+    .genre-link {
+        display: inline-block;
+
+        padding: 0.4rem 0.8rem;
+
+        background-color: lighten(variables.$secondary-color, 6%);
+        color: variables.$primary-color;
+
+        border: 1px solid rgba(variables.$primary-color, 0.15);
+        border-radius: 999px;
+
+        font-size: 0.8rem;
+        font-weight: 600;
+
+        text-decoration: none;
+
+        transition:
+            background-color 0.2s ease,
+            color 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+
+        &:hover {
+            background-color: variables.$primary-color;
+            color: variables.$secondary-color;
+
+            border-color: variables.$primary-color;
+
+            transform: translateY(-1px);
+        }
+
+        &:focus-visible {
+            outline: 2px solid variables.$primary-color;
+            outline-offset: 2px;
+        }
+    }
 }
 
 .view-book-image {
-    width: 20em;
+    display: block;
+
+    width: min(20rem, 80vw);
     height: auto;
+
+    margin: 0.5rem 0 1rem;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-.view-book h1,
+.view-book-details {
+    width: 100%;
+    max-width: 700px;
+}
+
+.view-book-price {
+    margin-bottom: 1rem;
+
+    color: variables.$primary-color;
+
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
 .view-book p {
     margin: 0;
-}
 
-@media screen and (min-width: 1200px) {
+    color: rgba(variables.$primary-color, 0.8);
 
-    .view-book {
-        padding-top: 2em;
-        padding-bottom: 2em;
+    font-size: 1rem;
+    line-height: 1.7;
 
-        padding-left: 25%;
-        padding-right: 25%;
-    }
+    text-align: left;
 }
 
 // ==============================
@@ -1031,26 +1097,372 @@ input {
 
 .book-catalogue {
     display: grid;
-    grid-template-columns: 240px 1fr;
-    gap: 30px;
-    align-items: stretch;
+
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 2rem;
+
+    width: 100%;
+    margin: 0;
+
+    padding: 1.5rem clamp(1.5rem, 3vw, 4rem);
+
+    align-items: start;
 }
 
 .book-filters {
     position: sticky;
-    top: 20px;
-    margin-left: 1em;
-    margin-top: 1em;
-}
+    top: 5rem;
 
-.book-filters input {
-    width: 100%;
-    padding: 10px 12px;
-    box-sizing: border-box;
+    align-self: start;
+
+    width: 220px;
+
+    padding: 1rem;
+
+    background-color: lighten(variables.$secondary-color, 3%);
+
+    border: 1px solid rgba(variables.$primary-color, 0.1);
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 10px rgba(0, 0, 0, 0.05);
+
+    >label {
+        display: block;
+
+        margin: 0 0 0.3rem;
+
+        color: variables.$primary-color;
+
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    >input[type="search"] {
+        display: block;
+
+        width: 100%;
+
+        padding: 0.6rem 0.7rem;
+        margin: 0 0 0.9rem;
+
+        background-color: variables.$secondary-color;
+        color: variables.$primary-color;
+
+        border: 1px solid rgba(variables.$primary-color, 0.15);
+        border-radius: 8px;
+
+        font: inherit;
+        font-size: 0.85rem;
+
+        outline: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background-color 0.2s ease;
+
+        &::placeholder {
+            color: rgba(variables.$primary-color, 0.45);
+        }
+
+        &:focus {
+            background-color: lighten(variables.$secondary-color, 2%);
+
+            border-color: variables.$primary-color;
+
+            box-shadow:
+                0 0 0 2px rgba(variables.$primary-color, 0.1);
+        }
+    }
+
+    fieldset {
+        padding: 0;
+        margin: 0;
+        border: none;
+
+        legend {
+            margin-bottom: 0.4rem;
+
+            color: variables.$primary-color;
+
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+
+            gap: 0.5rem;
+
+            min-height: 2rem;
+
+            padding: 0.35rem 0.5rem;
+            margin: 0;
+
+            color: rgba(variables.$primary-color, 0.8);
+
+            border-radius: 6px;
+
+            font-size: 0.85rem;
+            line-height: 1.2;
+
+            cursor: pointer;
+
+            transition:
+                background-color 0.15s ease,
+                color 0.15s ease;
+
+            &:hover {
+                background-color: rgba(variables.$primary-color, 0.06);
+                color: variables.$primary-color;
+            }
+        }
+
+        input[type="checkbox"] {
+            flex: 0 0 1rem;
+
+            appearance: none;
+            -webkit-appearance: none;
+
+            width: 1rem;
+            height: 1rem;
+
+            padding: 0;
+            margin: 0;
+
+            background-color: variables.$secondary-color;
+
+            border: 1.5px solid rgba(variables.$primary-color, 0.3);
+            border-radius: 3px;
+
+            display: grid;
+            place-items: center;
+
+            cursor: pointer;
+
+            // Prevent the checkbox from being affected
+            // by the global input styles.
+            box-sizing: border-box;
+
+            &::after {
+                content: "";
+
+                width: 0.28rem;
+                height: 0.5rem;
+
+                border-right: 2px solid white;
+                border-bottom: 2px solid white;
+
+                transform: rotate(45deg) scale(0);
+
+                transition: transform 0.15s ease;
+            }
+
+            &:checked {
+                background-color: variables.$primary-color;
+                border-color: variables.$primary-color;
+
+                &::after {
+                    transform: rotate(45deg) scale(1);
+                }
+            }
+
+            &:focus-visible {
+                outline: 2px solid variables.$primary-color;
+                outline-offset: 2px;
+            }
+        }
+    }
 }
 
 .book-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 25px;
+}
+
+.view-book-genres {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+
+    margin-bottom: 0.5rem;
+
+    .genre-link {
+        display: inline-block;
+
+        padding: 0.35rem 0.75rem;
+
+        background-color: rgba(variables.$primary-color, 0.08);
+        color: variables.$primary-color;
+
+        border: 1px solid rgba(variables.$primary-color, 0.15);
+        border-radius: 999px;
+
+        font-size: 0.8rem;
+        font-weight: 600;
+
+        text-decoration: none;
+
+        transition:
+            background-color 0.2s ease,
+            color 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+
+        &:hover {
+            background-color: variables.$primary-color;
+            color: white;
+            border-color: variables.$primary-color;
+
+            transform: translateY(-1px);
+        }
+
+        &:focus-visible {
+            outline: 2px solid variables.$primary-color;
+            outline-offset: 2px;
+        }
+    }
+}
+
+.profile-button,
+.profile-button:visited,
+.profile-button:hover,
+.profile-button:active {
+    color: inherit;
+    text-decoration: none;
+}
+
+.book-filters-toggle {
+    display: none;
+}
+
+@media (max-width: 760px) {
+
+    .book-catalogue {
+        display: block;
+
+        width: 100%;
+
+        padding: 1rem;
+    }
+
+    .book-filters {
+        position: sticky;
+        top: 5rem;
+
+        width: 100%;
+        padding: 1rem;
+
+        margin: 0 0 1rem;
+
+        background-color: lighten(variables.$secondary-color, 3%);
+
+        border: 1px solid rgba(variables.$primary-color, 0.1);
+        border-radius: 12px;
+
+        box-shadow:
+            0 3px 10px rgba(0, 0, 0, 0.05);
+
+        backdrop-filter: none;
+    }
+
+    // Mobile filter button
+
+    .book-filters-toggle {
+        width: 100%;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 0.75rem 0.9rem;
+
+        border: none;
+        border-radius: 10px;
+
+        background: transparent;
+        color: variables.$primary-color;
+
+        font: inherit;
+        font-size: 0.9rem;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        text-align: left;
+
+        &:hover {
+            background-color: rgba(variables.$primary-color, 0.05);
+        }
+
+        &:focus-visible {
+            outline: 2px solid variables.$primary-color;
+            outline-offset: -2px;
+        }
+    }
+
+    // Arrow
+
+    .filter-arrow {
+        width: 8px;
+        height: 8px;
+
+        border-right: 2px solid variables.$primary-color;
+        border-bottom: 2px solid variables.$primary-color;
+
+        transform: rotate(45deg);
+
+        transition: transform 0.2s ease;
+    }
+
+    .book-filters-toggle[aria-expanded="true"] {
+        .filter-arrow {
+            transform: rotate(225deg);
+        }
+    }
+
+    // Filter content
+
+    .book-filter-content {
+        display: none;
+
+        padding: 0 0.9rem 0.9rem;
+    }
+
+    .book-filters.is-open {
+        .book-filter-content {
+            display: block;
+        }
+    }
+
+    // Search inputs
+
+    .book-filters>.book-filter-content>input[type="search"] {
+        margin-bottom: 0.8rem;
+    }
+
+    // Books
+
+    .book-grid {
+        grid-template-columns: repeat(auto-fill,
+                minmax(180px, 1fr));
+
+        gap: 1rem;
+    }
+}
+
+@media (min-width: 921px) {
+    .book-catalogue {
+        padding-top: 1.75rem;
+        padding-bottom: 2rem;
+    }
+
+    .book-grid {
+        row-gap: 1.75rem;
+        column-gap: 1.5rem;
+    }
 }

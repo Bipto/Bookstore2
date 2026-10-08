@@ -3,26 +3,63 @@
 require_once '/var/www/shared/api.php';
 require_once '/var/www/shared/ajax.php';
 
+$data = json_decode(API::get('/genres?active=true'), TRUE);
+$genres = json_decode($data['data'], TRUE);
+
 ?>
 
 <div class="book-catalogue">
 
     <aside class="book-filters">
-        <label for="book-search">Search books</label>
 
-        <input
-            type="search"
-            id="book-search"
-            placeholder="Search by title..."
-            autocomplete="off">
+        <button
+            type="button"
+            class="book-filters-toggle"
+            aria-expanded="false"
+            aria-controls="book-filter-content">
 
-        <label for="author-search">Search authors</label>
+            <span>Filters</span>
 
-        <input
-            type="search"
-            id="author-search"
-            placeholder="Search by author..."
-            autocomplete="off">
+            <span class="filter-arrow" aria-hidden="true"></span>
+        </button>
+
+        <div class="book-filter-content" id="book-filter-content">
+
+            <label for="book-search">Search books</label>
+
+            <input
+                type="search"
+                id="book-search"
+                placeholder="Search by title..."
+                autocomplete="off">
+
+            <label for="author-search">Search authors</label>
+
+            <input
+                type="search"
+                id="author-search"
+                placeholder="Search by author..."
+                autocomplete="off">
+
+            <fieldset>
+                <legend>Genres</legend>
+
+                <?php foreach ($genres as $genre): ?>
+
+                    <label>
+                        <input
+                            type="checkbox"
+                            name="genre"
+                            value="<?= htmlspecialchars($genre['genre_id']) ?>">
+
+                        <?= htmlspecialchars($genre['name']) ?>
+                    </label>
+
+                <?php endforeach; ?>
+
+            </fieldset>
+
+        </div>
     </aside>
 
     <?php

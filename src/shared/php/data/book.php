@@ -6,8 +6,8 @@ class Book
     public string $Title;
     public int $Author;
     public string $Description;
-    public string $Genre;
     public float $Price;
     public int $StockCount = 0;
     public string $ImagePath;
+    public array $Genres = [];
 }

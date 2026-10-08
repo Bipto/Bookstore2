@@ -30,6 +30,7 @@ function openDB(): RelationalDatabase
 }
 
 $router = new Router();
+
 $router->get('/books', function () {
 
     $queryString = $_SERVER['QUERY_STRING'];
@@ -40,58 +41,128 @@ $router->get('/books', function () {
     $author = $parameters['author'] ?? '';
 
     $db = openDB();
-
     $pdo = $db->getPDO();
     $stmt = $pdo->prepare("
-            SELECT
-            b.book_id,
-            b.title,
-            a.name,
-            b.book_description,
-            b.genre,
-            b.price,
-            b.stock_count,
-            b.image_path
-        FROM bookstore.books AS b
-        INNER JOIN bookstore.authors AS a
-            ON b.author_id = a.author_id
-        WHERE b.title ILIKE '%{$title}%'
-        AND a.name ILIKE '%{$author}%';
+    SELECT
+        b.book_id,
+        b.title,
+        a.name AS author,
+        b.book_description,
+        b.price,
+        b.stock_count,
+        b.image_path,
+        COALESCE(
+        json_agg(
+                json_build_object(
+                    'genre_id', g.genre_id,
+                    'name', g.name
+                )
+                ORDER BY g.name
+            ) FILTER (WHERE g.name IS NOT NULL),
+            '[]'::json
+        ) AS genres
+    FROM bookstore.books AS b
+    INNER JOIN bookstore.authors AS a
+        ON b.author_id = a.author_id
+    LEFT JOIN bookstore.book_genres AS bg
+        ON b.book_id = bg.book_id
+    LEFT JOIN bookstore.genres AS g
+        ON bg.genre_id = g.genre_id
+    WHERE b.title ILIKE '%' || :title || '%'
+    AND a.name ILIKE '%' || :author || '%'
+    GROUP BY
+        b.book_id,
+        b.title,
+        a.name,
+        b.book_description,
+        b.price,
+        b.stock_count,
+        b.image_path
     ");
-    $result = $stmt->execute();
+
+    $stmt->execute([
+        'title' => $title,
+        'author' => $author
+    ]);
     $data = $stmt->fetchAll();
     echo json_encode($data);
 });
 
 $router->get('/books/{id}', function ($id) {
-    /* $db = openDB();
-    $queryBuilder = QueryBuilder::table('bookstore.books')
-        ->select()
-        ->where(['book_id' => $id]);
-
-    $result = $db->executeAndReturnOne($queryBuilder);
-    echo json_encode($result); */
-
     $db = openDB();
-
     $pdo = $db->getPDO();
+
     $stmt = $pdo->prepare("
-            SELECT
+        SELECT
             b.book_id,
             b.title,
             a.name AS author,
             b.book_description,
-            b.genre,
             b.price,
             b.stock_count,
-            b.image_path
+            b.image_path,
+            COALESCE(
+                json_agg(
+                        json_build_object(
+                            'genre_id', g.genre_id,
+                            'name', g.name
+                        )
+                        ORDER BY g.name
+                    ) FILTER (WHERE g.name IS NOT NULL),
+                    '[]'::json
+                ) AS genres
         FROM bookstore.books AS b
         INNER JOIN bookstore.authors AS a
             ON b.author_id = a.author_id
+        LEFT JOIN bookstore.book_genres AS bg
+            ON b.book_id = bg.book_id
+        LEFT JOIN bookstore.genres AS g
+            ON bg.genre_id = g.genre_id
         WHERE b.book_id = :book_id
+        GROUP BY
+            b.book_id,
+            b.title,
+            a.name,
+            b.book_description,
+            b.price,
+            b.stock_count,
+            b.image_path
     ");
-    $result = $stmt->execute(['book_id' => $id]);
-    $data = $stmt->fetch();
+
+    $stmt->execute(['book_id' => $id]);
+    $result = $stmt->fetch();
+
+    echo json_encode($result);
+});
+
+$router->get('/genres', function () {
+
+    $queryString = $_SERVER['QUERY_STRING'];
+    $parameters = [];
+    parse_str($queryString, $parameters);
+
+    $active = $parameters['active'] ?? false;
+
+    $joinType = $active ? 'INNER' : 'LEFT';
+
+    $sqlString = "
+    SELECT
+        g.genre_id,
+        g.name,
+        COUNT(bg.book_id) AS book_count
+    FROM bookstore.genres AS g
+    {$joinType} JOIN bookstore.book_genres AS bg
+        ON g.genre_id = bg.genre_id
+    GROUP BY
+        g.genre_id,
+        g.name;";
+
+    $db = openDB();
+    $pdo = $db->getPDO();
+    $stmt = $pdo->prepare($sqlString);
+
+    $stmt->execute();
+    $data = $stmt->fetchAll();
     echo json_encode($data);
 });
 
@@ -177,18 +248,6 @@ $router->post(
         ]);
 
         return json_encode(['success' => $succeeded]);
-
-        /* $queryBuilder = QueryBuilder::table('bookstore.users')
-            ->insert([
-                'email' => $data['email'],
-                'first_name' =>  $data['firstName'],
-                'last_name' => $data['lastName'],
-                'password' => $password
-            ]);
-
-        $json = [];
-        $json['success'] = $db->execute($queryBuilder);
-        echo json_encode($json); */
     }
 );
 
