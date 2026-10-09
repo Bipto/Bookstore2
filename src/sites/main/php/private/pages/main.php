@@ -5,6 +5,7 @@ require_once '/var/www/shared/ajax.php';
 
 $data = json_decode(API::get('/genres?active=true'), TRUE);
 $genres = json_decode($data['data'], TRUE);
+$genreCount = count($genres);
 
 ?>
 
@@ -41,23 +42,28 @@ $genres = json_decode($data['data'], TRUE);
                 placeholder="Search by author..."
                 autocomplete="off">
 
-            <fieldset>
-                <legend>Genres</legend>
+            <?php if ($genreCount > 0): ?>
 
-                <?php foreach ($genres as $genre): ?>
+                <hr>
+                <fieldset>
+                    <legend>Genres</legend>
 
-                    <label>
-                        <input
-                            type="checkbox"
-                            name="genre"
-                            value="<?= htmlspecialchars($genre['genre_id']) ?>">
+                    <?php foreach ($genres as $genre): ?>
 
-                        <?= htmlspecialchars($genre['name']) ?>
-                    </label>
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="genre"
+                                value="<?= htmlspecialchars($genre['genre_id']) ?>">
 
-                <?php endforeach; ?>
+                            <?= htmlspecialchars($genre['name']) ?>
+                        </label>
 
-            </fieldset>
+                    <?php endforeach; ?>
+
+                </fieldset>
+
+            <?php endif; ?>
 
         </div>
     </aside>

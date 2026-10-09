@@ -79,7 +79,7 @@ if ($response['success'] == true) {
 
         echo "Order total: £{$total}";
         echo "<br>";
-        echo "<button type='button' onclick=\"window.location.href='/checkout'\">Checkout</button>";
+        echo "<button class='form-button' type='button' onclick=\"window.location.href='/checkout'\">Checkout</button>";
         echo "<script>
         function RemoveFromCart(id, event)
         {
