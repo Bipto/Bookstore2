@@ -71,8 +71,6 @@ services:
       - ./src/sites/main/php:/var/www/sites/main:ro
       - ./src/shared/php:/var/www/shared:ro
       - ./composer.json:/var/www/composer.json:ro
-      - composer-lock:/var/www/composer.lock:ro
-      - vendor:/var/www/vendor
       - ./src/sites/main/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
 
     extra_hosts:
@@ -100,8 +98,6 @@ services:
       - ./src/sites/admin/php:/var/www/sites/admin:ro
       - ./src/shared/php:/var/www/shared:ro
       - ./composer.json:/var/www/composer.json:ro
-      - composer-lock:/var/www/composer.lock:ro
-      - vendor:/var/www/vendor
       - ./src/sites/admin/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
 
     extra_hosts:
@@ -129,8 +125,6 @@ services:
       - ./src/api/php:/var/www/api:ro
       - ./src/shared/php:/var/www/shared:ro
       - ./composer.json:/var/www/composer.json:ro
-      - composer-lock:/var/www/composer.lock:ro
-      - vendor:/var/www/vendor
       - ./src/api/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
 
     extra_hosts:
@@ -158,7 +152,6 @@ services:
       - ./src/shared/scss:/app/src/shared/scss:ro
 
       - ./package.json:/app/package.json:ro
-      - sass-node-modules:/app/node_modules
 
       # CSS output directories
       - ./src/sites/main/php/public/css:/app/src/sites/main/php/public/css
@@ -193,10 +186,7 @@ services:
 # ==========================================================
 
 volumes:
-  sass-node-modules:
   postgres_data:
-  vendor:
-  composer-lock:
 
     # ==========================================================
     # Networks
