@@ -95,7 +95,7 @@ class QueryBuilder
             $this->bindingValues[$paramName] = $values[$i];
 
             if ($i !== $count - 1) {
-                $this->selectString .= ' AND ';
+                $this->whereString .= ' AND ';
             }
         }
 
@@ -116,7 +116,7 @@ class QueryBuilder
         $sql = '';
 
         if ($this->queryType === QueryType::SELECT) {
-            $sql .= $this->selectString . ' ' . $this->whereString;
+            $sql = $this->selectString . ' ' . $this->whereString;
         } else if ($this->queryType === QueryType::INSERT) {
             $sql .= $this->insertString .= ' ' . $this->whereString;
         }
