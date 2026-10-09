@@ -9,41 +9,42 @@ enum QueryType
 class QueryBuilder
 {
     private ?QueryType $queryType;
-    private string $selectString = '';
-    private string $insertString = '';
-    private string $table;
+    private string $operationString = '';
 
     private $bindingValues = [];
     private string $whereString = '';
 
-    private function __construct(string $table)
-    {
-        $this->table = $table;
-    }
+    private string $joinString = '';
 
-    public static function table(string $table): QueryBuilder
+    private function __construct(private string $table, private ?string $alias) {}
+
+    public static function table(string $table, ?string $alias): QueryBuilder
     {
-        return new QueryBuilder($table);
+        return new QueryBuilder($table, $alias);
     }
 
     public function select(array $columns = ['*']): self
     {
         $this->queryType = QueryType::SELECT;
 
-        $this->selectString = 'SELECT ';
+        $this->operationString = 'SELECT ';
 
         $count = count($columns);
 
         for ($i = 0; $i < $count; $i++) {
             $column = $columns[$i];
-            $this->selectString .=  $column;
+            $this->operationString .=  $column;
 
             if ($i !== $count - 1) {
-                $this->selectString .= ', ';
+                $this->operationString .= ', ';
             }
         }
 
-        $this->selectString .= 'FROM ' . $this->table;
+        $this->operationString .= " FROM {$this->table}";
+
+        if ($this->alias !== null) {
+            $this->operationString .= " AS {$this->alias}";
+        }
 
         return $this;
     }
@@ -75,14 +76,14 @@ class QueryBuilder
         $keysSQL .= ')';
         $valuesSQL .= ')';
 
-        $this->insertString = "INSERT INTO {$this->table}{$keysSQL} VALUES {$valuesSQL}";
+        $this->operationString = "INSERT INTO {$this->table}{$keysSQL} VALUES {$valuesSQL}";
 
         return $this;
     }
 
     public function where(array $where): self
     {
-        $this->whereString = 'WHERE ';
+        $this->whereString = ' WHERE ';
 
         $count = count($where);
         $keys = array_keys($where);
@@ -102,6 +103,19 @@ class QueryBuilder
         return $this;
     }
 
+    public function innerJoin(string $table, string $column1, string $column2, ?string $alias): self
+    {
+        $this->joinString .= " INNER JOIN {$table}";
+
+        if ($alias !== null) {
+            $this->joinString .= " AS {$alias}";
+        }
+
+        $this->joinString .= " ON {$column1} = {$column2}";
+
+        return $this;
+    }
+
     public function getBindingParameters(): array
     {
         return $this->bindingValues;
@@ -116,10 +130,12 @@ class QueryBuilder
         $sql = '';
 
         if ($this->queryType === QueryType::SELECT) {
-            $sql = $this->selectString . ' ' . $this->whereString;
+            $sql = $this->operationString . ' ' . $this->whereString;
         } else if ($this->queryType === QueryType::INSERT) {
-            $sql .= $this->insertString .= ' ' . $this->whereString;
+            $sql .= $this->operationString .= ' ' . $this->whereString;
         }
+
+        $sql = "{$this->operationString}{$this->whereString}{$this->joinString}";
 
         return $sql;
     }
@@ -163,8 +179,11 @@ class RelationalDatabase
 
     private function executeImpl(QueryBuilder $query): PDOStatement
     {
-        $stmt = $this->pdo->prepare($query->queryString());
-        $stmt->execute($query->getBindingParameters());
+        $queryString = $query->queryString();
+        $bindingParameters = $query->getBindingParameters();
+
+        $stmt = $this->pdo->prepare($queryString);
+        $stmt->execute($bindingParameters);
         return $stmt;
     }
 

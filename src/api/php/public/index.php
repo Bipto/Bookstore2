@@ -255,11 +255,10 @@ $router->get(
     '/cart',
     function () {
         $db = openDB();
-        $pdo = $db->getPDO();
 
-        $email = $_GET['email'];
+        $email = $_GET['email'] ?? null;
 
-        $stmt = $pdo->prepare('
+        /* $stmt = $pdo->prepare('
             SELECT cart_item_id, title, a.name AS author, price, b.image_path, quantity
             FROM bookstore.books AS b
             INNER JOIN bookstore.cart_items AS ci
@@ -278,7 +277,36 @@ $router->get(
         if ($success) {
             $json['success'] = $success;
             $json['cart'] = $stmt->fetchAll();
+        } 
+        echo json_encode($json);*/
+
+        $query = QueryBuilder::table('bookstore.books', 'b')
+            ->select(
+                [
+                    'cart_item_id',
+                    'title',
+                    'a.name AS author',
+                    'price',
+                    'b.image_path',
+                    'quantity'
+                ]
+            )
+            ->innerJoin('bookstore.cart_items', 'ci.book_id', 'b.book_id', 'ci')
+            ->innerJoin('bookstore.carts', 'c.cart_id', 'ci.cart_id', 'c')
+            ->innerJoin('bookstore.users', 'u.user_id', 'c.user_id', 'u')
+            ->innerJoin('bookstore.authors', 'a.author_id', 'b.author_id', 'a');
+
+        if ($email !== null && $email != '') {
+            $query->where([
+                'email' => $email
+            ]);
         }
+
+        $data = $db->executeAndReturnAll($query);
+        $json = [];
+        $json['success'] = true;
+        $json['cart'] = $data;
+
         echo json_encode($json);
     }
 );
