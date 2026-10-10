@@ -18,7 +18,7 @@ class QueryBuilder
 
     private function __construct(private string $table, private ?string $alias) {}
 
-    public static function table(string $table, ?string $alias): QueryBuilder
+    public static function table(string $table, ?string $alias = null): QueryBuilder
     {
         return new QueryBuilder($table, $alias);
     }
@@ -135,7 +135,7 @@ class QueryBuilder
             $sql .= $this->operationString .= ' ' . $this->whereString;
         }
 
-        $sql = "{$this->operationString}{$this->whereString}{$this->joinString}";
+        $sql = "{$this->operationString}{$this->joinString}{$this->whereString}";
 
         return $sql;
     }

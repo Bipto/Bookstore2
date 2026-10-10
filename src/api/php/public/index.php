@@ -254,31 +254,9 @@ $router->post(
 $router->get(
     '/cart',
     function () {
+        $email = $_GET['email'] ?? null;
         $db = openDB();
 
-        $email = $_GET['email'] ?? null;
-
-        /* $stmt = $pdo->prepare('
-            SELECT cart_item_id, title, a.name AS author, price, b.image_path, quantity
-            FROM bookstore.books AS b
-            INNER JOIN bookstore.cart_items AS ci
-                ON ci.book_id = b.book_id
-            INNER JOIN bookstore.carts AS c
-                ON c.cart_id = ci.cart_id
-            INNER JOIN bookstore.users AS u
-                ON u.user_id = c.user_id
-            INNER JOIN bookstore.authors AS a
-                ON a.author_id = b.author_id
-            WHERE u.email = :email
-        ');
-
-        $json = [];
-        $success =         $stmt->execute([':email' => $email]);
-        if ($success) {
-            $json['success'] = $success;
-            $json['cart'] = $stmt->fetchAll();
-        } 
-        echo json_encode($json);*/
 
         $query = QueryBuilder::table('bookstore.books', 'b')
             ->select(
@@ -294,13 +272,10 @@ $router->get(
             ->innerJoin('bookstore.cart_items', 'ci.book_id', 'b.book_id', 'ci')
             ->innerJoin('bookstore.carts', 'c.cart_id', 'ci.cart_id', 'c')
             ->innerJoin('bookstore.users', 'u.user_id', 'c.user_id', 'u')
-            ->innerJoin('bookstore.authors', 'a.author_id', 'b.author_id', 'a');
-
-        if ($email !== null && $email != '') {
-            $query->where([
+            ->innerJoin('bookstore.authors', 'a.author_id', 'b.author_id', 'a')
+            ->where([
                 'email' => $email
             ]);
-        }
 
         $data = $db->executeAndReturnAll($query);
         $json = [];
