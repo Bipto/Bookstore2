@@ -90,7 +90,8 @@ class QueryBuilder
         $values = array_values($where);
 
         for ($i = 0; $i < $count; $i++) {
-            $paramName = ":{$keys[$i]}";
+            $randomNumber = rand();
+            $paramName = ":{$keys[$i]}{$randomNumber}";
             $this->whereString .= "{$keys[$i]} = {$paramName}";
 
             $this->bindingValues[$paramName] = $values[$i];
