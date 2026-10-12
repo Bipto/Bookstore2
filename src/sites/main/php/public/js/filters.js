@@ -8,9 +8,15 @@ function updateBookGrid() {
   clearTimeout(searchTimeout);
 
   searchTimeout = setTimeout(async () => {
+    const checkedGenres = document.querySelectorAll(
+        'input[type="checkbox"][name="genre"]:checked');
+
     const params = new URLSearchParams();
     params.set('title', titleEntry.value);
     params.set('author', authorEntry.value);
+
+    checkedGenres.forEach(
+        checkbox => {params.append('genre[]', checkbox.value)});
 
     const url = '/ajax/view_book_grid.php?' + params.toString();
 
@@ -27,6 +33,14 @@ titleEntry.addEventListener('input', () => {
 
 authorEntry.addEventListener('input', () => {
   updateBookGrid();
+});
+
+const genres =
+    document.querySelectorAll('input[type="checkbox"][name="genre"]');
+genres.forEach(genre => {
+  genre.addEventListener('change', event => {
+    updateBookGrid();
+  });
 });
 
 const filterToggle = document.querySelector('.book-filters-toggle');

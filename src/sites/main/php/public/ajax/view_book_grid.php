@@ -2,10 +2,8 @@
 
 require_once '/var/www/shared/api.php';
 
-$title = urlencode($_GET['title'] ?? '');
-$author = urlencode($_GET['author']  ?? '');
-
-$url = $title !== null ? "/books?title={$title}&author={$author}" : "/books";
+$queryString = $_SERVER['QUERY_STRING'];
+$url = $queryString != '' ? "/books?{$queryString}" : "/books";
 
 $response = API::get($url);
 $results = json_decode($response, true);

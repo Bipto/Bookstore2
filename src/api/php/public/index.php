@@ -37,53 +37,79 @@ $router->get('/books', function () {
     $parameters = [];
     parse_str($queryString, $parameters);
 
-    $title = $parameters['title'] ?? '';
-    $author = $parameters['author'] ?? '';
+    $genres = $parameters['genre'] ?? [];
 
     $db = openDB();
     $pdo = $db->getPDO();
-    $stmt = $pdo->prepare("
-    SELECT
-        b.book_id,
-        b.title,
-        a.name AS author,
-        b.book_description,
-        b.price,
-        b.stock_count,
-        b.image_path,
-        COALESCE(
-        json_agg(
-                json_build_object(
-                    'genre_id', g.genre_id,
-                    'name', g.name
-                )
-                ORDER BY g.name
-            ) FILTER (WHERE g.name IS NOT NULL),
-            '[]'::json
-        ) AS genres
-    FROM bookstore.books AS b
-    INNER JOIN bookstore.authors AS a
-        ON b.author_id = a.author_id
-    LEFT JOIN bookstore.book_genres AS bg
-        ON b.book_id = bg.book_id
-    LEFT JOIN bookstore.genres AS g
-        ON bg.genre_id = g.genre_id
-    WHERE b.title ILIKE '%' || :title || '%'
-    AND a.name ILIKE '%' || :author || '%'
-    GROUP BY
-        b.book_id,
-        b.title,
-        a.name,
-        b.book_description,
-        b.price,
-        b.stock_count,
-        b.image_path
-    ");
 
-    $stmt->execute([
-        'title' => $title,
-        'author' => $author
-    ]);
+    $sql = "
+        SELECT
+            b.book_id,
+            b.title,
+            a.name AS author,
+            b.book_description,
+            b.price,
+            b.stock_count,
+            b.image_path,
+            COALESCE(
+                json_agg(
+                    json_build_object(
+                        'genre_id', g.genre_id,
+                        'name', g.name
+                    )
+                    ORDER BY g.name
+                ) FILTER (WHERE g.name IS NOT NULL),
+                '[]'::json
+            ) AS genres
+        FROM bookstore.books AS b
+        INNER JOIN bookstore.authors AS a
+            ON b.author_id = a.author_id
+        LEFT JOIN bookstore.book_genres AS bg
+            ON b.book_id = bg.book_id
+        LEFT JOIN bookstore.genres AS g
+            ON bg.genre_id = g.genre_id
+        WHERE b.title ILIKE :title
+        AND a.name ILIKE :author
+    ";
+
+    $params = [
+        'title' => '%' . ($parameters['title'] ?? '') . '%',
+        'author' => '%' . ($parameters['author'] ?? '') . '%',
+    ];
+
+    if (!empty($genres)) {
+        $placeholders = [];
+
+        foreach (array_values($genres) as $i => $genreId) {
+            $key = "genre_$i";
+            $placeholders[] = ":$key";
+            $params[$key] = (int) $genreId;
+        }
+
+        $sql .= "
+        AND EXISTS (
+            SELECT 1
+            FROM bookstore.book_genres AS bg2
+            WHERE bg2.book_id = b.book_id
+              AND bg2.genre_id IN (" . implode(', ', $placeholders) . ")
+        )
+    ";
+    }
+
+    $sql .= "
+        GROUP BY
+            b.book_id,
+            b.title,
+            a.name,
+            b.book_description,
+            b.price,
+            b.stock_count,
+            b.image_path
+    ";
+
+    $stmt = $pdo->prepare($sql);
+
+    $stmt->execute($params);
     $data = $stmt->fetchAll();
     echo json_encode($data);
 });
@@ -143,26 +169,25 @@ $router->get('/genres', function () {
 
     $active = $parameters['active'] ?? false;
 
-    $joinType = $active ? 'INNER' : 'LEFT';
-
-    $sqlString = "
-    SELECT
-        g.genre_id,
-        g.name,
-        COUNT(bg.book_id) AS book_count
-    FROM bookstore.genres AS g
-    {$joinType} JOIN bookstore.book_genres AS bg
-        ON g.genre_id = bg.genre_id
-    GROUP BY
-        g.genre_id,
-        g.name;";
-
     $db = openDB();
-    $pdo = $db->getPDO();
-    $stmt = $pdo->prepare($sqlString);
 
-    $stmt->execute();
-    $data = $stmt->fetchAll();
+    $query = QueryBuilder::table('bookstore.genres', 'g')
+        ->select([
+            'g.genre_id',
+            'g.name',
+            'COUNT(bg.book_id) AS book_count'
+        ])
+        ->groupBy([
+            'g.genre_id',
+            'g.name'
+        ]);
+
+    $active ?
+        $query->innerJoin('bookstore.book_genres', 'g.genre_id', 'bg.genre_id', 'bg') :
+        $query->leftJoin('bookstore.book_genres', 'g.genre_id', 'bg.genre_id', 'bg');
+
+    $data = $db->executeAndReturnAll($query);
+
     echo json_encode($data);
 });
 
