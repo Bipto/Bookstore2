@@ -290,14 +290,16 @@ $router->delete(
     '/cart',
     function () {
         $db = openDB();
-        $pdo = $db->getPDO();
+        //$pdo = $db->getPDO();
 
         $id = $_GET['id'];
 
-        $stmt = $pdo->prepare('DELETE FROM bookstore.cart_items WHERE cart_item_id = :cart_item_id');
+        $query = QueryBuilder::table('bookstore.cart_items')
+            ->delete()
+            ->where(['cart_item_id' => $id]);
 
         $json = [];
-        $json['success'] = $stmt->execute([':cart_item_id' => $id]);
+        $json['success'] = $db->execute($query);
 
         echo json_encode($json);
     }

@@ -4,6 +4,7 @@ enum QueryType
 {
     case SELECT;
     case INSERT;
+    case DELETE;
 }
 
 class QueryBuilder
@@ -86,6 +87,13 @@ class QueryBuilder
 
         $this->operationString = "INSERT INTO {$this->table}{$keysSQL} VALUES {$valuesSQL}";
 
+        return $this;
+    }
+
+    public function delete(): self
+    {
+        $this->queryType = QueryType::DELETE;
+        $this->operationString = "DELETE FROM {$this->table}";
         return $this;
     }
 
