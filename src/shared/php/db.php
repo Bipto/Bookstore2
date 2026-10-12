@@ -15,12 +15,19 @@ class QueryBuilder
     private string $whereString = '';
 
     private string $joinString = '';
+    private string $groupByString = '';
 
     private function __construct(private string $table, private ?string $alias) {}
 
     public static function table(string $table, ?string $alias = null): QueryBuilder
     {
         return new QueryBuilder($table, $alias);
+    }
+
+    private static function createBindingParameterName(string $name): string
+    {
+        $randomNumber = rand();
+        return ":{$name}{$randomNumber}";
     }
 
     public function select(array $columns = ['*']): self
@@ -61,8 +68,9 @@ class QueryBuilder
         $values = array_values($values);
 
         for ($i = 0; $i < $count; $i++) {
-            $paramName = ":{$keys[$i]}";
-            $keysSQL .= "{$keys[$i]}";
+            $paramName = QueryBuilder::createBindingParameterName($keys[$i]);
+
+            $paramName = $this->$keysSQL .= "{$keys[$i]}";
             $valuesSQL .= "{$paramName}";
 
             $this->bindingValues[$paramName] = $values[$i];
@@ -90,8 +98,7 @@ class QueryBuilder
         $values = array_values($where);
 
         for ($i = 0; $i < $count; $i++) {
-            $randomNumber = rand();
-            $paramName = ":{$keys[$i]}{$randomNumber}";
+            $paramName = QueryBuilder::createBindingParameterName($keys[$i]);
             $this->whereString .= "{$keys[$i]} = {$paramName}";
 
             $this->bindingValues[$paramName] = $values[$i];
@@ -104,9 +111,27 @@ class QueryBuilder
         return $this;
     }
 
-    public function innerJoin(string $table, string $column1, string $column2, ?string $alias): self
+    public function groupBy(array $columns): self
     {
-        $this->joinString .= " INNER JOIN {$table}";
+        $this->groupByString = ' GROUP BY ';
+
+        $count = count($columns);
+
+        for ($i = 0; $i < $count; $i++) {
+            $column = $columns[$i];
+            $this->groupByString .=  $column;
+
+            if ($i !== $count - 1) {
+                $this->groupByString .= ', ';
+            }
+        }
+
+        return $this;
+    }
+
+    private function join(string $joinType, string $table, string $column1, string $column2, ?string $alias): self
+    {
+        $this->joinString .= " {$joinType} JOIN {$table}";
 
         if ($alias !== null) {
             $this->joinString .= " AS {$alias}";
@@ -115,6 +140,21 @@ class QueryBuilder
         $this->joinString .= " ON {$column1} = {$column2}";
 
         return $this;
+    }
+
+    public function leftJoin(string $table, string $column1, string $column2, ?string $alias): self
+    {
+        return $this->join('LEFT', $table, $column1, $column2, $alias);
+    }
+
+    public function rightJoin(string $table, string $column1, string $column2, ?string $alias): self
+    {
+        return $this->join('RIGHT', $table, $column1, $column2, $alias);
+    }
+
+    public function innerJoin(string $table, string $column1, string $column2, ?string $alias): self
+    {
+        return $this->join('INNER', $table, $column1, $column2, $alias);
     }
 
     public function getBindingParameters(): array
@@ -128,17 +168,7 @@ class QueryBuilder
             throw new Exception("No query type has been specified");
         }
 
-        $sql = '';
-
-        if ($this->queryType === QueryType::SELECT) {
-            $sql = $this->operationString . ' ' . $this->whereString;
-        } else if ($this->queryType === QueryType::INSERT) {
-            $sql .= $this->operationString .= ' ' . $this->whereString;
-        }
-
-        $sql = "{$this->operationString}{$this->joinString}{$this->whereString}";
-
-        return $sql;
+        return "{$this->operationString}{$this->joinString}{$this->whereString}{$this->groupByString}";
     }
 }
 
