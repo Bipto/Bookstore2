@@ -57,6 +57,7 @@ $genreCount = count($genres);
                                 value="<?= htmlspecialchars($genre['genre_id']) ?>">
 
                             <?= htmlspecialchars($genre['name']) ?>
+                            (<?= htmlspecialchars($genre['book_count']) ?>)
                         </label>
 
                     <?php endforeach; ?>
