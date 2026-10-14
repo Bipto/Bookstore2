@@ -172,6 +172,16 @@ The expression fantastic literature is often used for this genre by Anglophone l
         "High fantasy, or epic fantasy, is a subgenre of fantasy defined by the epic nature of its setting or by the epic stature of its characters, themes, or plot. High fantasy is usually set in an alternative, fictional (\"secondary\") world, rather than the \"real\" or \"primary\" world. This secondary world is usually internally consistent, and often quite developed, but its rules differ from those of the primary world. By contrast, low fantasy is characterized by being set on Earth, the rational primary or \"real world\", upon which the non-rational supernatural or fantasy elements intrude."
     );
     insertGenre($genre5, $conn);
+
+    $genre6 = new Genre(
+        "Speculative Fiction",
+        "Speculative fiction is an umbrella genre of fiction that encompasses all the subgenres that depart from realism, or strictly imitating everyday reality, instead presenting fantastical, supernatural, futuristic, or other highly imaginative realms or beings.
+
+        This catch-all genre includes but is not limited to fantasy, science fiction, social science fiction, science fantasy, superhero, paranormal and supernatural horror, alternate history, magical realism, slipstream, weird fiction, utopia, dystopia, and apocalyptic and post-apocalyptic fiction. In other words, the genre presents individuals, events, or places beyond the ordinary real world.
+        
+        The term speculative fiction has been used for works of literature, film, television, drama, video games, radio, and hybrid media."
+    );
+    insertGenre($genre6, $conn);
 }
 
 function createAuthors(PDO $conn)
@@ -338,7 +348,7 @@ The Silmarillion received a generally poor reception on publication; it sold muc
     $book8->BookID = 7;
     $book8->Title = "Harry Potter and the Philosopher's Stone";
     $book8->Author = 2;
-    //$book8->Genre = "Fantasy";
+    $book8->Genres = [1];
     $book8->Price = 7.99;
     $book8->ImagePath = "harry_potter_philosophers_stone.png";
     $book8->StockCount = 30;
@@ -358,7 +368,7 @@ The Harry Potter series has been used as a source of object lessons in education
     $book9->BookID = 8;
     $book9->Title = "Harry Potter and the Chamber of Secrets";
     $book9->Author = 2;
-    //$book9->Genre = "Fantasy";
+    $book9->Genres = [1];
     $book9->Price = 7.99;
     $book9->ImagePath = "harry_potter_chamber_of_secrets.png";
     $book9->StockCount = 30;
@@ -378,7 +388,7 @@ The film adaptation of the novel, released in 2002, became (at the time) the six
     $book10->BookID = 9;
     $book10->Title = "Harry Potter and the Prisoner of Azkaban";
     $book10->Author = 2;
-    //$book10->Genre = "Fantasy";
+    $book10->Genres = [1];
     $book10->Price = 7.99;
     $book10->ImagePath = "harry_potter_prisoner_of_azkaban.png";
     $book10->StockCount = 30;
@@ -395,7 +405,7 @@ The film adaptation of the novel was released in 2004, grossing more than $796 m
     $book11->BookID = 10;
     $book11->Title = "Harry Potter and the Goblet of Fire";
     $book11->Author = 2;
-    //$book11->Genre = "Fantasy";
+    $book11->Genres = [1];
     $book11->Price = 7.99;
     $book11->ImagePath = "harry_potter_goblet_of_fire.png";
     $book11->StockCount = 30;
@@ -409,7 +419,7 @@ The book was published in the United Kingdom by Bloomsbury and in the United Sta
     $book12->BookID = 11;
     $book12->Title = "Harry Potter and the Order of the Phoenix";
     $book12->Author = 2;
-    //$book12->Genre = "Fantasy";
+    $book12->Genres = [1];
     $book12->Price = 7.99;
     $book12->ImagePath = "harry_potter_order_of_the_phoenix.png";
     $book12->StockCount = 30;
@@ -423,7 +433,7 @@ Harry Potter and the Order of the Phoenix won several awards, including the Amer
     $book13->BookID = 12;
     $book13->Title = "Harry Potter and the Half Blood Prince";
     $book13->Author = 2;
-    //$book13->Genre = "Fantasy";
+    $book13->Genres = [1];
     $book13->Price = 7.99;
     $book13->ImagePath = "harry_potter_half_blood_prince.png";
     $book13->StockCount = 30;
@@ -440,7 +450,7 @@ Reviewers noted that the book had a darker tone than its predecessors, though it
     $book14->BookID = 13;
     $book14->Title = "Harry Potter and the Deathly Hallows";
     $book14->Author = 2;
-    //$book14->Genre = "Fantasy";
+    $book14->Genres = [1];
     $book14->Price = 7.99;
     $book14->ImagePath = "harry_potter_and_the_deathly_hallows.jpg";
     $book14->StockCount = 30;
@@ -456,7 +466,7 @@ A film adaptation of the novel was released in two parts: Harry Potter and the D
     $book15->BookID = 14;
     $book15->Title = "The Hunger Games";
     $book15->Author = 3;
-    //$book15->Genre = "Young Adult";
+    $book15->Genres = [3, 4];
     $book15->Price = 7.99;
     $book15->ImagePath = "the_hunger_games.jpg";
     $book15->StockCount = 30;
@@ -482,7 +492,7 @@ A prequel novel, titled The Ballad of Songbirds and Snakes, about the early days
     $book16->BookID = 15;
     $book16->Title = "The Hunger Games: Catching Fire";
     $book16->Author = 3;
-    //$book16->Genre = "Young Adult";
+    $book16->Genres = [3, 4];
     $book16->Price = 7.99;
     $book16->ImagePath = "the_hunger_games_catching_fire.jpg";
     $book16->StockCount = 30;
@@ -499,7 +509,7 @@ A film adaptation, The Hunger Games: Catching Fire, was released on November 22,
     $book17->BookID = 16;
     $book17->Title = "The Hunger Games: Mockingjay";
     $book17->Author = 3;
-    //$book17->Genre = "Young Adult";
+    $book17->Genres = [3, 4];
     $book17->Price = 7.99;
     $book17->ImagePath = "the_hunger_games_mockingjay.jpg";
     $book17->StockCount = 30;
@@ -513,7 +523,7 @@ The hardcover and audiobook editions of Mockingjay were published by Scholastic 
     $book18->BookID = 17;
     $book18->Title = "The Ballad of Songbirds and Snakes";
     $book18->Author = 3;
-    //$book18->Genre = "Young Adult";
+    $book18->Genres = [3, 4];
     $book18->Price = 7.99;
     $book18->ImagePath = "ballad_of_songbirds_and_snakes.jpg";
     $book18->StockCount = 30;
@@ -524,7 +534,7 @@ The hardcover and audiobook editions of Mockingjay were published by Scholastic 
     $book19->BookID = 18;
     $book19->Title = "A Game of Thrones";
     $book19->Author = 4;
-    //$book19->Genre = "Fantasy";
+    $book19->Genres = [5];
     $book19->Price = 12.50;
     $book19->ImagePath = "a_game_of_thrones.jpg";
     $book19->StockCount = 30;
@@ -535,7 +545,7 @@ The hardcover and audiobook editions of Mockingjay were published by Scholastic 
     $book20->BookID = 19;
     $book20->Title = "A Clash of Kings";
     $book20->Author = 4;
-    //$book20->Genre = "Fantasy";
+    $book20->Genres = [5];
     $book20->Price = 12.50;
     $book20->ImagePath = "a_clash_of_kings.jpg";
     $book20->StockCount = 30;
@@ -549,7 +559,7 @@ As a prophecy of doom cuts across the sky - a comet the colour of blood and flam
     $book21->BookID = 20;
     $book21->Title = "A Storm of Swords: Part 1 Steel and Snow";
     $book21->Author = 4;
-    //$book21->Genre = "Fantasy";
+    $book21->Genres = [5];
     $book21->Price = 12.50;
     $book21->ImagePath = "a_storm_of_swords_part_1.jpg";
     $book21->StockCount = 30;
@@ -566,7 +576,7 @@ Throughout Westeros, the war for the Iron Throne rages more fiercely than ever, 
     $book22->BookID = 21;
     $book22->Title = "A Storm of Swords: Part 2 Blood and Gold";
     $book22->Author = 4;
-    //$book22->Genre = "Fantasy";
+    $book22->Genres = [5];
     $book22->Price = 12.50;
     $book22->ImagePath = "a_storm_of_swords_part_2.jpg";
     $book22->StockCount = 30;
@@ -583,7 +593,7 @@ Meanwhile, across the ocean, Daenerys Stormborn, the last heir of the Dragon Kin
     $book23->BookID = 22;
     $book23->Title = "A Feast for Crows";
     $book23->Author = 4;
-    //$book23->Genre = "Fantasy";
+    $book23->Genres = [5];
     $book23->Price = 12.50;
     $book23->ImagePath = "a_feast_for_crows.jpg";
     $book23->StockCount = 30;
@@ -600,7 +610,7 @@ From the icy north, where Others threaten the Wall, apprentice Maester Samwell T
     $book24->BookID = 23;
     $book24->Title = "A Dance With Dragons: Part 1 Dreams and Dust";
     $book24->Author = 4;
-    //$book24->Genre = "Fantasy";
+    $book24->Genres = [5];
     $book24->Price = 12.50;
     $book24->ImagePath = "a_dance_with_dragons_part_1.jpg";
     $book24->StockCount = 30;
@@ -617,7 +627,7 @@ To the north lies the great Wall of ice and stone - a structure only as strong a
     $book25->BookID = 24;
     $book25->Title = "A Dance With Dragons: Part 2 After the Feast";
     $book25->Author = 4;
-    //$book25->Genre = "Fantasy";
+    $book25->Genres = [5];
     $book25->Price = 12.50;
     $book25->ImagePath = "a_dance_with_dragons_part_2.jpg";
     $book25->StockCount = 30;
@@ -634,7 +644,7 @@ On all sides bitter conflicts are reigniting, played out by a grand cast of outl
     $book26->BookID = 24;
     $book26->Title = "Nineteen Eighty-Four";
     $book26->Author = 5;
-    //$book26->Genre = "Political Fiction";
+    $book26->Genres = [4, 6];
     $book26->Price = 7.99;
     $book26->ImagePath = "1984.jpg";
     $book26->StockCount = 30;
