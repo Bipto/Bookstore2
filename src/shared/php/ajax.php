@@ -2,36 +2,28 @@
 
 class AJAX
 {
-    public static function call(string $url): string
+    public static function call(string $url, string $elementId = 'page-content'): string
     {
-        return "
-        <div class='page' id='page-content'>
-            <div class='spinner-container'>
+        $generatedId = uniqid();
+        $id = "{$elementId}_{$generatedId}";
 
-            <div class='spinner'>
-            </div>
+        $jsUrl = json_encode($url);
+        $jsId = json_encode($id);
+        $jsScriptId = "script_{$generatedId}";
+        $jsScriptIdJson = json_encode($jsScriptId);
 
+        return <<<HTML
+        <div class="page" id="$id">
+            <div class="spinner-container">
+                <div class="spinner"></div>
             </div>
         </div>
 
-        <script>
-            fetch('{$url}', {
-                method: 'GET'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Request failed');
-                }
-                return response.text();
-            })
-            .then(html => {
-                document.querySelector('.page').innerHTML = html;
-            })
-            .catch(() => {
-                document.querySelector('.page').innerHTML =
-                    '<p>Something went wrong.</p>';
-            });
+        <script id="$jsScriptId">
+            loadContent($jsUrl, $jsId);
+            const script = document.getElementById($jsScriptIdJson);
+            script?.remove();
         </script>
-        ";
+        HTML;
     }
 }
