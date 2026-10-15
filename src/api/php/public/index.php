@@ -37,10 +37,7 @@ $bookController = new BookController($db);
 $cartController = new CartController($db);
 
 $router->get('/books', [$bookController, 'getBooks']);
-
-$router->get('/books/{id}', function ($id) use ($bookController) {
-    $bookController->getBookById($id);
-});
+$router->get('/books/{id}', fn($id) => $bookController->getBookById($id));
 
 $router->get('/genres', function () {
 
