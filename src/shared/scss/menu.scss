@@ -1,0 +1,655 @@
+@use "variables";
+
+// ==============================
+// Navigation bar
+// ==============================
+
+.menubar {
+    flex-shrink: 0;
+
+    width: 100%;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0.6rem 6%;
+
+    background-color: variables.$primary-color;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+// ==============================
+// Logo
+// ==============================
+
+.company-logo {
+    flex-shrink: 0;
+
+    .company-logo-img {
+        display: block;
+
+        height: 3.5rem;
+        width: auto;
+    }
+}
+
+// ==============================
+// Navigation links
+// ==============================
+
+.links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 1;
+
+    gap: 0.35rem;
+
+    margin: 0 2rem;
+}
+
+.menubar-link {
+    a {
+        display: block;
+
+        padding: 0.65rem 0.9rem;
+
+        color: white;
+        text-decoration: none;
+
+        font-size: 0.95rem;
+        font-weight: 600;
+
+        border-radius: 8px;
+
+        transition:
+            background-color 0.2s ease,
+            color 0.2s ease;
+    }
+
+    a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    a:focus-visible {
+        outline: 2px solid variables.$secondary-color;
+        outline-offset: 2px;
+    }
+
+    h2 {
+        margin: 0;
+
+        font-size: inherit;
+        font-weight: inherit;
+    }
+}
+
+// ==============================
+// Right-hand menu
+// ==============================
+
+.right-hand-menu {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    gap: 0.75rem;
+
+    flex-shrink: 0;
+}
+
+// ==============================
+// Cart / Profile buttons
+// ==============================
+
+.cart-circle,
+.profile-circle {
+    width: 3rem;
+    height: 3rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background-color: variables.$secondary-color;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.cart-circle:hover,
+.profile-circle:hover {
+    transform: translateY(-1px);
+    background-color: lighten(variables.$secondary-color, 5%);
+}
+
+.cart-circle i,
+.profile-circle i {
+    font-size: 1.2rem;
+}
+
+.cart-circle {
+    position: relative;
+
+    margin-right: 0;
+
+    overflow: visible;
+
+    cursor: pointer;
+}
+
+.profile-button {
+    display: flex;
+    align-items: center;
+
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+// ==============================
+// Dropdown
+// ==============================
+
+.menu-dropdown {
+    position: absolute;
+
+    top: calc(100% + 12px);
+    right: 0;
+
+    width: 20rem;
+    max-width: calc(100vw - 2rem);
+
+    padding: 0.5rem;
+
+    background-color: white;
+    color: #222;
+
+    border: 1px solid #e8e8e8;
+    border-radius: 14px;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.06);
+
+    z-index: 1000;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translateY(-8px) scale(0.98);
+
+    max-height: 75vh;
+    overflow-y: auto;
+
+    transition:
+        opacity 0.18s ease,
+        transform 0.18s ease,
+        visibility 0.18s ease;
+
+    a {
+        display: block;
+
+        padding: 10px 12px;
+
+        color: #333;
+        text-decoration: none;
+
+        font-size: 15px;
+
+        border-radius: 6px;
+
+        transition: background-color 0.15s ease;
+
+        &:hover {
+            background-color: #f2f2f2;
+        }
+    }
+
+    &.show {
+        opacity: 1;
+        visibility: visible;
+
+        transform: translateY(0) scale(1);
+    }
+}
+
+// ==============================
+// Dropdown arrows
+// ==============================
+
+.dropdown-arrow-cart,
+.dropdown-arrow-profile {
+    width: 7px;
+    height: 7px;
+
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+
+    transform: rotate(45deg);
+
+    transform-origin: center;
+
+    transition: transform 0.2s ease;
+}
+
+.profile.open {
+    .dropdown-arrow-profile {
+        transform: rotate(225deg);
+    }
+}
+
+.cart.open {
+    .dropdown-arrow-cart {
+        transform: rotate(225deg);
+    }
+}
+
+// ==============================
+// Hamburger menu
+// ==============================
+
+.hamburger {
+    display: none;
+
+    width: 44px;
+    height: 44px;
+
+    padding: 8px;
+    margin: 0;
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+
+    span {
+        display: block;
+
+        width: 26px;
+        height: 2.5px;
+
+        margin: 5px auto;
+
+        border-radius: 999px;
+
+        background-color: variables.$secondary-color;
+
+        transition:
+            transform 0.2s ease,
+            opacity 0.2s ease;
+    }
+
+    &:hover {
+        span {
+            background-color: lighten(variables.$secondary-color, 10%);
+        }
+    }
+
+    &:focus-visible {
+        outline: 2px solid variables.$secondary-color;
+        outline-offset: 2px;
+
+        border-radius: 8px;
+    }
+
+    &.open {
+        span:nth-child(1) {
+            transform: translateY(7.5px) rotate(45deg);
+        }
+
+        span:nth-child(2) {
+            opacity: 0;
+        }
+
+        span:nth-child(3) {
+            transform: translateY(-7.5px) rotate(-45deg);
+        }
+    }
+}
+
+// ==============================
+// Mobile navigation
+// ==============================
+
+@media (max-width: 920px) {
+
+    .menubar {
+        padding: 0.5rem 5%;
+    }
+
+    // Logo
+
+    .company-logo {
+        .company-logo-img {
+            height: 3rem;
+        }
+    }
+
+    // Hamburger
+
+    .hamburger {
+        display: block;
+
+        flex-shrink: 0;
+
+        margin-right: 0.5rem;
+    }
+
+    // Navigation links
+
+    .links {
+        position: absolute;
+
+        top: 100%;
+        left: 0;
+        right: 0;
+
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+
+        gap: 0;
+
+        margin: 0;
+        padding: 0.5rem;
+
+        background-color: variables.$primary-color;
+
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+
+        opacity: 0;
+        visibility: hidden;
+
+        transform: translateY(-10px);
+
+        transition:
+            opacity 0.2s ease,
+            transform 0.2s ease,
+            visibility 0.2s ease;
+
+        &.show {
+            opacity: 1;
+            visibility: visible;
+
+            transform: translateY(0);
+        }
+    }
+
+    .menubar-link {
+        width: 100%;
+
+        a {
+            width: 100%;
+
+            padding: 0.9rem 1rem;
+
+            text-align: left;
+
+            border-radius: 8px;
+        }
+
+        h2 {
+            font-size: 1rem;
+        }
+    }
+
+    // Cart / Profile
+
+    .right-hand-menu {
+        gap: 0.5rem;
+    }
+
+    .cart-circle,
+    .profile-circle {
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+
+    .cart-circle i,
+    .profile-circle i {
+        font-size: 1.1rem;
+    }
+}
+
+// ==============================
+// Small mobile devices
+// ==============================
+
+@media (max-width: 480px) {
+
+    .menubar {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .company-logo {
+        .company-logo-img {
+            height: 2.6rem;
+        }
+    }
+
+    .hamburger {
+        margin-right: 0.25rem;
+    }
+
+    .cart-circle,
+    .profile-circle {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .cart-circle i,
+    .profile-circle i {
+        font-size: 1rem;
+    }
+}
+
+// ==============================
+// Checkout
+// ==============================
+
+.checkout-item {
+    display: flex;
+    align-items: center;
+
+    gap: 20px;
+}
+
+.checkout-image {
+    width: 100px;
+    height: 100px;
+
+    object-fit: contain;
+}
+
+.checkout-info {
+    flex: 1;
+}
+
+// ==============================
+// Modal spinner
+// ==============================
+
+.modal-spinner {
+    min-height: 250px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .spinner {
+        width: 45px;
+        height: 45px;
+
+        border-width: 5px;
+    }
+}
+
+// ==============================
+// Cart items
+// ==============================
+
+.cart-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 14px 10px;
+
+    border-bottom: 1px solid #eeeeee;
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.cart-item-info {
+    min-width: 0;
+
+    flex: 1;
+}
+
+.cart-item-title {
+    color: #222;
+
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    line-height: 1.3;
+}
+
+.cart-item-author {
+    margin-top: 3px;
+
+    color: #777;
+
+    font-size: 0.8rem;
+}
+
+.cart-item-quantity {
+    margin-top: 3px;
+
+    color: #777;
+
+    font-size: 0.8rem;
+}
+
+.cart-item-price {
+    flex-shrink: 0;
+
+    color: #222;
+
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.cart-remove {
+    padding: 0;
+    margin: 6px 0 0;
+
+    border: none;
+    background: none;
+
+    color: #888;
+
+    font-family: inherit;
+    font-size: 0.75rem;
+
+    cursor: pointer;
+
+    &:hover {
+        color: #d33;
+    }
+}
+
+@media (max-width: 920px) {
+    .company-logo {
+        margin-right: auto;
+
+        .company-logo-img {
+            height: 3rem;
+        }
+    }
+
+    .hamburger {
+        display: block;
+        flex-shrink: 0;
+        margin-right: 0.5rem;
+    }
+
+    .right-hand-menu {
+        flex-shrink: 0;
+        gap: 0.5rem;
+    }
+}
+
+.cart-circle {
+    position: relative;
+
+    .cart-count {
+        position: absolute;
+
+        top: -4px;
+        right: -4px;
+
+        min-width: 1.25rem;
+        height: 1.25rem;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 0.25rem;
+
+        box-sizing: border-box;
+
+        background-color: #e53935;
+        color: white;
+
+        border: 2px solid variables.$primary-color;
+        border-radius: 999px;
+
+        font-size: 0.7rem;
+        font-weight: 700;
+        line-height: 1;
+
+        pointer-events: none;
+
+        transition:
+            transform 0.2s ease,
+            opacity 0.2s ease;
+    }
+
+    &.has-items {
+        .cart-count {
+            transform: scale(1);
+        }
+    }
+}
+
+.profile-button,
+.profile-button:visited,
+.profile-button:hover,
+.profile-button:active {
+    color: inherit;
+    text-decoration: none;
+}
