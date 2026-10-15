@@ -71,8 +71,8 @@ class QueryBuilder
         for ($i = 0; $i < $count; $i++) {
             $paramName = QueryBuilder::createBindingParameterName($keys[$i]);
 
-            $paramName = $this->$keysSQL .= "{$keys[$i]}";
-            $valuesSQL .= "{$paramName}";
+            $keysSQL .= $keys[$i];
+            $valuesSQL .= $paramName;
 
             $this->bindingValues[$paramName] = $values[$i];
 
@@ -85,7 +85,8 @@ class QueryBuilder
         $keysSQL .= ')';
         $valuesSQL .= ')';
 
-        $this->operationString = "INSERT INTO {$this->table}{$keysSQL} VALUES {$valuesSQL}";
+        $this->operationString =
+            "INSERT INTO {$this->table} {$keysSQL} VALUES {$valuesSQL}";
 
         return $this;
     }
