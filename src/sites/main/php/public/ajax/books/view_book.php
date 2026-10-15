@@ -31,7 +31,7 @@ if ($results['success']) {
         addToCartButton.addEventListener("click", async function (event) {
             try {
                 const response = await fetch(
-                    "/ajax/add_book_to_cart.php?book_id=' . $id . '",
+                    "/ajax/books/add_book_to_cart.php?book_id=' . $id . '",
                     { method: "GET" }
                 );
 

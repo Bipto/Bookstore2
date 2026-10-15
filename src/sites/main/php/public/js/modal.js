@@ -26,7 +26,7 @@ document.addEventListener('click', async function(event) {
 
   try {
     const response = await fetch(
-        `/ajax/view_book_modal.php?id=${encodeURIComponent(bookId)}`);
+        `/ajax/books/view_book_modal.php?id=${encodeURIComponent(bookId)}`);
 
     if (!response.ok) {
       throw new Error(`HTTP error: ${response.status}`);
@@ -93,7 +93,7 @@ document.addEventListener('keydown', function(event) {
 
 function addToCart(id) {
   fetch(
-      '/ajax/add_book_to_cart.php?book_id=' + encodeURIComponent(id),
+      '/ajax/books/add_book_to_cart.php?book_id=' + encodeURIComponent(id),
       {method: 'GET'})
       .then(response => {
         if (!response.ok) {

@@ -18,7 +18,7 @@ function updateBookGrid() {
     checkedGenres.forEach(
         checkbox => {params.append('genre[]', checkbox.value)});
 
-    const url = '/ajax/view_book_grid.php?' + params.toString();
+    const url = '/ajax/books/view_book_grid.php?' + params.toString();
 
     const response = await fetch(url);
     const html = await response.text();

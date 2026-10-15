@@ -71,7 +71,7 @@ $genreCount = count($genres);
 
     <?php
 
-    echo AJAX::call('/ajax/view_book_grid.php');
+    echo AJAX::call('/ajax/books/view_book_grid.php');
 
     ?>
 

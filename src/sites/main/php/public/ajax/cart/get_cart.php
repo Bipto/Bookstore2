@@ -85,9 +85,9 @@ if ($response['success'] == true) {
         {
         event.stopPropagation();
 
-        fetch('/ajax/remove_item_from_cart.php?id=' + id)
+        fetch('/ajax/cart/remove_item_from_cart.php?id=' + id)
             .then(() => {
-                return fetch('/ajax/get_cart.php');
+                return fetch('/ajax/cart/get_cart.php');
             })
             .then(response => response.text())
             .then(html => {

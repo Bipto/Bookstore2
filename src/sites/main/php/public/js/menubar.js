@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
       cartSpinner.style.display = 'block';
 
       try {
-        const response = await fetch('/ajax/get_cart.php');
+        const response = await fetch('/ajax/cart/get_cart.php');
 
         if (!response.ok) {
           throw new Error('Request failed');
