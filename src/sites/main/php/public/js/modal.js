@@ -92,18 +92,24 @@ document.addEventListener('keydown', function(event) {
 });
 
 function addToCart(id) {
-  $.ajax({
-    url: '/ajax/add_book_to_cart.php?book_id=' + id,
-    type: 'GET',
-    success: function() {
-      closeModal();
+  fetch(
+      '/ajax/add_book_to_cart.php?book_id=' + encodeURIComponent(id),
+      {method: 'GET'})
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Request failed');
+        }
 
-      let count = parseInt($('#cart-count').text());
-      $('#cart-count').text(count + 1);
-      $('#cart-count').show();
-    },
-    error: function() {
-      $('.page').html('<p>Something went wrong.</p>');
-    }
-  });
+        closeModal();
+
+        const cartCount = document.querySelector('#cart-count');
+        const count = parseInt(cartCount.textContent, 10) || 0;
+
+        cartCount.textContent = count + 1;
+        cartCount.style.display = '';
+      })
+      .catch(() => {
+        document.querySelector('.page').innerHTML =
+            '<p>Something went wrong.</p>';
+      });
 }

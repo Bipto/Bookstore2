@@ -15,16 +15,22 @@ class AJAX
         </div>
 
         <script>
-        $.ajax({
-            url: '{$url}',
-            type: 'GET',
-            success: function (html) {
-                $('.page').html(html);
-            },
-            error: function () {
-                $('.page').html('<p>Something went wrong.</p>');
-            }
-        });
+            fetch('{$url}', {
+                method: 'GET'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Request failed');
+                }
+                return response.text();
+            })
+            .then(html => {
+                document.querySelector('.page').innerHTML = html;
+            })
+            .catch(() => {
+                document.querySelector('.page').innerHTML =
+                    '<p>Something went wrong.</p>';
+            });
         </script>
         ";
     }

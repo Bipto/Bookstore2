@@ -26,19 +26,25 @@ if ($results['success']) {
 
     $html .= '<script>
     
-    const addToCartButton = $(".add-to-cart");
-    addToCartButton.on("click", function(event){
-        $.ajax({
-            url: "/ajax/add_book_to_cart.php?book_id=' . $id . '",
-            type: "GET",
-            success: function (html) {
-                $(location).prop("href", "/");
-            },
-            error: function () {
-                $(".page").html("<p>Something went wrong.</p>");
+        const addToCartButton = document.querySelector(".add-to-cart");
+
+        addToCartButton.addEventListener("click", async function (event) {
+            try {
+                const response = await fetch(
+                    "/ajax/add_book_to_cart.php?book_id=' . $id . '",
+                    { method: "GET" }
+                );
+
+                if (!response.ok) {
+                    throw new Error("Request failed");
+                }
+
+                window.location.href = "/";
+            } catch (error) {
+                document.querySelector(".page").innerHTML =
+                    "<p>Something went wrong.</p>";
             }
         });
-    });
 
     </script>';
 

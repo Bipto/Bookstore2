@@ -1,79 +1,84 @@
-$(function() {
-  const $profile = $('.profile');
-  const $profileCircle = $('#profile-circle');
-  const $profileDropdown = $('#profile-dropdown');
+document.addEventListener('DOMContentLoaded', function() {
+  const profile = document.querySelector('.profile');
+  const profileCircle = document.querySelector('#profile-circle');
+  const profileDropdown = document.querySelector('#profile-dropdown');
 
-  const $cart = $('.cart');
-  const $cartCircle = $('#cart-circle');
-  const $cartDropdown = $('#cart-dropdown');
+  const cart = document.querySelector('.cart');
+  const cartCircle = document.querySelector('#cart-circle');
+  const cartDropdown = document.querySelector('#cart-dropdown');
 
-  const $hamburger = $('#hamburger');
-  const $navLinks = $('#links');
+  const cartContent = document.querySelector('#cart-content');
+  const cartSpinner = document.querySelector('#cart-spinner');
+
+  const hamburger = document.querySelector('#hamburger');
+  const navLinks = document.querySelector('#links');
 
   // Profile
-  $profileCircle.on('click', function(event) {
+  profileCircle.addEventListener('click', function(event) {
     event.stopPropagation();
 
-    $profile.toggleClass('open');
-    $profileDropdown.toggleClass('show');
+    profile.classList.toggle('open');
+    profileDropdown.classList.toggle('show');
 
-    $cart.removeClass('open');
-    $cartDropdown.removeClass('show');
+    cart.classList.remove('open');
+    cartDropdown.classList.remove('show');
   });
 
   // Cart
-  $cartCircle.on('click', function(event) {
+  cartCircle.addEventListener('click', async function(event) {
     event.stopPropagation();
 
-    const isOpen = $cart.toggleClass('open').hasClass('open');
-    $cartDropdown.toggleClass('show', isOpen);
+    const isOpen = cart.classList.toggle('open');
+    cartDropdown.classList.toggle('show', isOpen);
 
-    $profile.removeClass('open');
-    $profileDropdown.removeClass('show');
+    profile.classList.remove('open');
+    profileDropdown.classList.remove('show');
 
     if (isOpen) {
-      $('#cart-content').hide();
-      $('#cart-spinner').show();
+      cartContent.style.display = 'none';
+      cartSpinner.style.display = 'block';
 
-      $.ajax({
-        url: '/ajax/get_cart.php',
-        type: 'GET',
-        success: function(html) {
-          $('#cart-content').html(html).show();
-          $('#cart-spinner').hide();
-        },
-        error: function() {
-          $('#cart-content').html('<p>Something went wrong.</p>').show();
-          $('#cart-spinner').hide();
+      try {
+        const response = await fetch('/ajax/get_cart.php');
+
+        if (!response.ok) {
+          throw new Error('Request failed');
         }
-      });
+
+        const html = await response.text();
+
+        cartContent.innerHTML = html;
+      } catch (error) {
+        cartContent.innerHTML = '<p>Something went wrong.</p>';
+      } finally {
+        cartContent.style.display = 'block';
+        cartSpinner.style.display = 'none';
+      }
     }
   });
 
-  // handle the user clicking outside the dropdown
-  $(document).on('click', function(event) {
-    if (!$(event.target).closest('.profile, #profile-dropdown').length) {
-      $profile.removeClass('open');
-      $profileDropdown.removeClass('show');
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', function(event) {
+    if (!event.target.closest('.profile, #profile-dropdown')) {
+      profile.classList.remove('open');
+      profileDropdown.classList.remove('show');
     }
 
-    if (!$(event.target).closest('.cart, #cart-dropdown').length) {
-      $cart.removeClass('open');
-      $cartDropdown.removeClass('show');
+    if (!event.target.closest('.cart, #cart-dropdown')) {
+      cart.classList.remove('open');
+      cartDropdown.classList.remove('show');
     }
   });
-
 
   // Hamburger
-  $hamburger.on('click', function() {
-    const isOpen = $(this).toggleClass('open').hasClass('open');
+  hamburger.addEventListener('click', function() {
+    const isOpen = hamburger.classList.toggle('open');
 
-    $navLinks.toggleClass('show', isOpen);
+    navLinks.classList.toggle('show', isOpen);
 
-    $(this)
-        .attr('aria-expanded', isOpen)
-        .attr(
-            'aria-label',
-            isOpen ? 'Close navigation menu' : 'Open navigation menu');
+    hamburger.setAttribute('aria-expanded', isOpen);
+    hamburger.setAttribute(
+        'aria-label',
+        isOpen ? 'Close navigation menu' : 'Open navigation menu');
   });
 });
