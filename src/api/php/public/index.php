@@ -4,6 +4,8 @@ require_once '/var/www/shared/db.php';
 require_once '/var/www/shared/router.php';
 
 require_once '/var/www/api/private/url_validator.php';
+require_once '/var/www/api/private/controllers/book_controller.php';
+require_once '/var/www/api/private/controllers/cart_controller.php';
 
 //handle authorization of requesting URL
 $allowedOrigins = [
@@ -29,136 +31,15 @@ function openDB(): RelationalDatabase
     );
 }
 
+$db = openDB();
 $router = new Router();
+$bookController = new BookController($db);
+$cartController = new CartController($db);
 
-$router->get('/books', function () {
+$router->get('/books', [$bookController, 'getBooks']);
 
-    $queryString = $_SERVER['QUERY_STRING'];
-    $parameters = [];
-    parse_str($queryString, $parameters);
-
-    $genres = $parameters['genre'] ?? [];
-
-    $db = openDB();
-    $pdo = $db->getPDO();
-
-    $sql = "
-        SELECT
-            b.book_id,
-            b.title,
-            a.name AS author,
-            b.book_description,
-            b.price,
-            b.stock_count,
-            b.image_path,
-            COALESCE(
-                json_agg(
-                    json_build_object(
-                        'genre_id', g.genre_id,
-                        'name', g.name
-                    )
-                    ORDER BY g.name
-                ) FILTER (WHERE g.name IS NOT NULL),
-                '[]'::json
-            ) AS genres
-        FROM bookstore.books AS b
-        INNER JOIN bookstore.authors AS a
-            ON b.author_id = a.author_id
-        LEFT JOIN bookstore.book_genres AS bg
-            ON b.book_id = bg.book_id
-        LEFT JOIN bookstore.genres AS g
-            ON bg.genre_id = g.genre_id
-        WHERE b.title ILIKE :title
-        AND a.name ILIKE :author
-    ";
-
-    $params = [
-        'title' => '%' . ($parameters['title'] ?? '') . '%',
-        'author' => '%' . ($parameters['author'] ?? '') . '%',
-    ];
-
-    if (!empty($genres)) {
-        $placeholders = [];
-
-        foreach (array_values($genres) as $i => $genreId) {
-            $key = "genre_$i";
-            $placeholders[] = ":$key";
-            $params[$key] = (int) $genreId;
-        }
-
-        $sql .= "
-        AND EXISTS (
-            SELECT 1
-            FROM bookstore.book_genres AS bg2
-            WHERE bg2.book_id = b.book_id
-              AND bg2.genre_id IN (" . implode(', ', $placeholders) . ")
-        )
-    ";
-    }
-
-    $sql .= "
-        GROUP BY
-            b.book_id,
-            b.title,
-            a.name,
-            b.book_description,
-            b.price,
-            b.stock_count,
-            b.image_path
-    ";
-
-    $stmt = $pdo->prepare($sql);
-
-    $stmt->execute($params);
-    $data = $stmt->fetchAll();
-    echo json_encode($data);
-});
-
-$router->get('/books/{id}', function ($id) {
-    $db = openDB();
-    $pdo = $db->getPDO();
-
-    $stmt = $pdo->prepare("
-        SELECT
-            b.book_id,
-            b.title,
-            a.name AS author,
-            b.book_description,
-            b.price,
-            b.stock_count,
-            b.image_path,
-            COALESCE(
-                json_agg(
-                        json_build_object(
-                            'genre_id', g.genre_id,
-                            'name', g.name
-                        )
-                        ORDER BY g.name
-                    ) FILTER (WHERE g.name IS NOT NULL),
-                    '[]'::json
-                ) AS genres
-        FROM bookstore.books AS b
-        INNER JOIN bookstore.authors AS a
-            ON b.author_id = a.author_id
-        LEFT JOIN bookstore.book_genres AS bg
-            ON b.book_id = bg.book_id
-        LEFT JOIN bookstore.genres AS g
-            ON bg.genre_id = g.genre_id
-        WHERE b.book_id = :book_id
-        GROUP BY
-            b.book_id,
-            b.title,
-            a.name,
-            b.book_description,
-            b.price,
-            b.stock_count,
-            b.image_path
-    ");
-
-    $stmt->execute(['book_id' => $id]);
-    $result = $stmt->fetch();
-
-    echo json_encode($result);
+$router->get('/books/{id}', function ($id) use ($bookController) {
+    $bookController->getBookById($id);
 });
 
 $router->get('/genres', function () {
@@ -215,119 +96,17 @@ $router->post(
 
 $router->post(
     '/add_book_to_cart',
-    function () {
-        $data = json_decode(file_get_contents('php://input'), true);
-
-        $email = $data['email'];
-        $bookId = $data['bookId'];
-        $quantity = $data['quantity'] ?? 1;
-
-        $db = openDB();
-        $pdo = $db->getPDO();
-
-        $stmt = $pdo->prepare('
-            SELECT user_id FROM bookstore.users
-            WHERE email = :email
-        ');
-
-        $succeeded = $stmt->execute(['email' => $email]);
-        if (!$succeeded) {
-            return json_encode(['success' => false]);
-        }
-
-        $userId = $succeeded ? $stmt->fetch(PDO::FETCH_ASSOC)['user_id'] : null;
-
-        $stmt = $pdo->prepare('
-            WITH inserted AS (
-                INSERT INTO bookstore.carts (user_id)
-                SELECT :user_id
-                WHERE NOT EXISTS (
-                    SELECT 1
-                    FROM bookstore.carts
-                    WHERE user_id = :user_id
-                )
-                RETURNING cart_id
-            )
-            SELECT cart_id FROM inserted
-            UNION ALL
-            SELECT cart_id
-            FROM bookstore.carts
-            WHERE user_id = :user_id
-            LIMIT 1;
-        ');
-        $succeeded = $stmt->execute(['user_id' => $userId]);
-        if (!$succeeded) {
-            return json_encode(['success' => false]);
-        }
-
-        $cartId = $stmt->fetch(PDO::FETCH_ASSOC)['cart_id'] ?? null;
-
-        $stmt = $pdo->prepare('
-        INSERT INTO bookstore.cart_items(cart_id, book_id, quantity)
-        VALUES(:cart_id, :book_id, :quantity)
-        ');
-        $succeeded = $stmt->execute([
-            ':cart_id' => $cartId,
-            ':book_id' => $bookId,
-            ':quantity' => $quantity
-        ]);
-
-        return json_encode(['success' => $succeeded]);
-    }
+    [$cartController, 'addBook']
 );
 
 $router->get(
     '/cart',
-    function () {
-        $email = $_GET['email'] ?? null;
-        $db = openDB();
-
-
-        $query = QueryBuilder::table('bookstore.books', 'b')
-            ->select(
-                [
-                    'cart_item_id',
-                    'title',
-                    'a.name AS author',
-                    'price',
-                    'b.image_path',
-                    'quantity'
-                ]
-            )
-            ->innerJoin('bookstore.cart_items', 'ci.book_id', 'b.book_id', 'ci')
-            ->innerJoin('bookstore.carts', 'c.cart_id', 'ci.cart_id', 'c')
-            ->innerJoin('bookstore.users', 'u.user_id', 'c.user_id', 'u')
-            ->innerJoin('bookstore.authors', 'a.author_id', 'b.author_id', 'a')
-            ->where([
-                'email' => $email
-            ]);
-
-        $data = $db->executeAndReturnAll($query);
-        $json = [];
-        $json['success'] = true;
-        $json['cart'] = $data;
-
-        echo json_encode($json);
-    }
+    [$cartController, 'getCart']
 );
 
 $router->delete(
     '/cart',
-    function () {
-        $db = openDB();
-        //$pdo = $db->getPDO();
-
-        $id = $_GET['id'];
-
-        $query = QueryBuilder::table('bookstore.cart_items')
-            ->delete()
-            ->where(['cart_item_id' => $id]);
-
-        $json = [];
-        $json['success'] = $db->execute($query);
-
-        echo json_encode($json);
-    }
+    [$cartController, 'removeItem']
 );
 
 $router->post(
