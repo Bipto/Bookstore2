@@ -21,32 +21,8 @@ if ($results['success']) {
             <img src='{$imagePath}' class='view-book-image' loading='lazy'>
             <h4>£{$formattedPrice}</h4>
             <p>{$data['book_description']}</p>
-            <button class='add-to-cart'>Add to cart</button>
+            <button class='add-to-cart' onclick='addToCart({$id})'>Add to cart</button>
         </div>";
-
-    $html .= '<script>
-    
-        const addToCartButton = document.querySelector(".add-to-cart");
-
-        addToCartButton.addEventListener("click", async function (event) {
-            try {
-                const response = await fetch(
-                    "/ajax/books/add_book_to_cart.php?book_id=' . $id . '",
-                    { method: "GET" }
-                );
-
-                if (!response.ok) {
-                    throw new Error("Request failed");
-                }
-
-                window.location.href = "/";
-            } catch (error) {
-                document.querySelector(".page").innerHTML =
-                    "<p>Something went wrong.</p>";
-            }
-        });
-
-    </script>';
 
     echo $html;
 } else {

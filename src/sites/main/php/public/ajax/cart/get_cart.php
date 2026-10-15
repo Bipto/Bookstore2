@@ -80,32 +80,6 @@ if ($response['success'] == true) {
         echo "Order total: £{$total}";
         echo "<br>";
         echo "<button class='form-button' type='button' onclick=\"window.location.href='/checkout'\">Checkout</button>";
-        echo "<script>
-        function RemoveFromCart(id, event)
-        {
-        event.stopPropagation();
-
-        fetch('/ajax/cart/remove_item_from_cart.php?id=' + id)
-            .then(() => {
-                return fetch('/ajax/cart/get_cart.php');
-            })
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('cart-content').innerHTML = html;
-
-                const count = parseInt($('#cart-count').text());
-                const newCount = count - 1;
-                $('#cart-count').text(newCount);
-
-                if (newCount === 0)
-                {
-                    $('#cart-count').hide();
-                }
-            });
-
-
-        }
-        </script>";
     }
 } else {
     echo '<p>Failed to get cart</p>';

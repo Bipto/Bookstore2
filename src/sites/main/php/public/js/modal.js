@@ -93,7 +93,7 @@ document.addEventListener('keydown', function(event) {
 
 function addToCart(id) {
   fetch(
-      '/ajax/books/add_book_to_cart.php?book_id=' + encodeURIComponent(id),
+      '/ajax/cart/add_book_to_cart.php?book_id=' + encodeURIComponent(id),
       {method: 'GET'})
       .then(response => {
         if (!response.ok) {
