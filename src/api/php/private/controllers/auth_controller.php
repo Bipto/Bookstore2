@@ -1,5 +1,7 @@
 <?php
 
+require_once '/var/www/shared/rest_builder.php';
+
 class AuthController
 {
     public function __construct(private RelationalDatabase $db) {}
@@ -8,16 +10,23 @@ class AuthController
     {
         $data = json_decode(file_get_contents('php://input'), true);
 
-        $queryBuilder = QueryBuilder::table('bookstore.users')
-            ->select()
-            ->where([
-                'email' => $data['email']
-            ]);
+        try {
+            $queryBuilder = QueryBuilder::table('bookstore.users')
+                ->select()
+                ->where([
+                    'email' => $data['email']
+                ]);
 
-        $result = $this->db->executeAndReturnOne($queryBuilder);
+            $results = $this->db->executeAndReturnOne($queryBuilder);
+            $password = $data['password'];
 
-        $json = [];
-        $json['success'] = password_verify($data['password'], $result['password']);
-        echo json_encode($json);
+            if ($password && password_verify($password, $results['password'])) {
+                REST::response(200, []);
+            } else {
+                REST::response(401, ['error' => 'The provided details are incorrect']);
+            }
+        } catch (Exception $e) {
+            REST::response(500, ['error' => 'An error occurred accessing the database']);
+        }
     }
 }

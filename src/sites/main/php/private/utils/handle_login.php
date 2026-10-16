@@ -14,8 +14,7 @@ $data = [
 ];
 
 $response = json_decode(API::post('/auth/login', $data), TRUE);
-$data = json_decode($response['data'], TRUE);
-if ($data['success'] === true) {
+if ($response['success'] === true) {
     $_SESSION['email'] = $email;
     echo '<script>window.location.href="/"</script>';
     exit;

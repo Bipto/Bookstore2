@@ -11,11 +11,14 @@ class API
 
         $response = curl_exec($ch);
 
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
         if ($response === false) {
             $json['error'] = curl_error($ch);
             $json['success'] = false;
         } else {
-            $json['success'] = true;
+            $json['success'] = ($httpCode >= 200 && $httpCode < 300);
+            $json['status_code'] = $httpCode;
             $json['data'] = $response;
         }
 
