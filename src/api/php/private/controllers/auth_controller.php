@@ -22,6 +22,8 @@ class AuthController
 
             if ($password && password_verify($password, $results['password'])) {
                 REST::response(200, []);
+            } else if (!$password) {
+                REST::response(401, ['error' => 'An account could not be found with the provided email']);
             } else {
                 REST::response(401, ['error' => 'The provided details are incorrect']);
             }
