@@ -2,10 +2,10 @@
 
 class AJAX
 {
-    public static function call(string $url, string $elementId = 'page-content'): string
+    public static function call(string $url, string $elementId): string
     {
         $generatedId = uniqid();
-        $id = "{$elementId}_{$generatedId}";
+        $id = $elementId;
 
         $jsUrl = json_encode($url);
         $jsId = json_encode($id);

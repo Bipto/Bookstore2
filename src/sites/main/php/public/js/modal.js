@@ -90,26 +90,3 @@ document.addEventListener('keydown', function(event) {
     closeModal();
   }
 });
-
-function addToCart(id) {
-  fetch(
-      '/ajax/cart/add_book_to_cart.php?book_id=' + encodeURIComponent(id),
-      {method: 'GET'})
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Request failed');
-        }
-
-        closeModal();
-
-        const cartCount = document.querySelector('#cart-count');
-        const count = parseInt(cartCount.textContent, 10) || 0;
-
-        cartCount.textContent = count + 1;
-        cartCount.style.display = '';
-      })
-      .catch(() => {
-        document.querySelector('.page').innerHTML =
-            '<p>Something went wrong.</p>';
-      });
-}

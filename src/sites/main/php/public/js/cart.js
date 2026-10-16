@@ -1,4 +1,4 @@
-async function addToCart(id) {
+async function AddToCart(id) {
   try {
     const url = '/ajax/cart/add_book_to_cart.php?book_id=' + id;
     const response = await fetch(url, {method: 'GET'});

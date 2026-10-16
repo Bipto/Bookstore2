@@ -65,7 +65,7 @@ session_start();
     $router->get('/contact', '/var/www/sites/main/private/pages/contact.php');
 
     $router->get('/view_book/{book_id}', function ($id) {
-        echo AJAX::call("/ajax/books/view_book.php?id={$id}");
+        echo AJAX::call("/ajax/books/view_book.php?id={$id}", 'page-content');
     });
 
     $router->get('/login', '/var/www/sites/main/private/pages/login.php');
