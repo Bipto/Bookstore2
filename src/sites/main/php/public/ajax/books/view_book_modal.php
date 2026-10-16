@@ -92,7 +92,7 @@ if ($results['success']) {
     <button
         type='button'
         class='modal-button add-to-cart'
-        onclick='addToCart({$id})'
+        onclick='AddToCart({$id})'
     >
         Add to cart
     </button>

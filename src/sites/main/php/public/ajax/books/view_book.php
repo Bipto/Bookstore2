@@ -21,7 +21,7 @@ if ($results['success']) {
             <img src='{$imagePath}' class='view-book-image' loading='lazy'>
             <h4>£{$formattedPrice}</h4>
             <p>{$data['book_description']}</p>
-            <button class='add-to-cart' onclick='addToCart({$id})'>Add to cart</button>
+            <button class='add-to-cart' onclick='AddToCart({$id})'>Add to cart</button>
         </div>";
 
     echo $html;
