@@ -7,7 +7,7 @@ session_start();
 $email = $_SESSION['email'];
 $bookId = $_GET['book_id'] ?? null;
 
-$response = API::post('/add_book_to_cart', [
+$response = API::post('/cart', [
     'email' => $email,
     'bookId' => $bookId
 ]);

@@ -4,8 +4,11 @@ require_once '/var/www/shared/db.php';
 require_once '/var/www/shared/router.php';
 
 require_once '/var/www/api/private/url_validator.php';
+require_once '/var/www/api/private/controllers/auth_controller.php';
 require_once '/var/www/api/private/controllers/book_controller.php';
 require_once '/var/www/api/private/controllers/cart_controller.php';
+require_once '/var/www/api/private/controllers/genre_controller.php';
+require_once '/var/www/api/private/controllers/user_controller.php';
 
 //handle authorization of requesting URL
 $allowedOrigins = [
@@ -33,96 +36,42 @@ function openDB(): RelationalDatabase
 
 $db = openDB();
 $router = new Router();
+$authController = new AuthController($db);
 $bookController = new BookController($db);
 $cartController = new CartController($db);
+$genreController = new GenreController($db);
+$userController = new UserController($db);
 
-$router->get('/books', [$bookController, 'getBooks']);
-$router->get('/books/{id}', fn($id) => $bookController->getBookById($id));
-
-$router->get('/genres', function () {
-
-    $queryString = $_SERVER['QUERY_STRING'];
-    $parameters = [];
-    parse_str($queryString, $parameters);
-
-    $active = $parameters['active'] ?? false;
-
-    $db = openDB();
-
-    $query = QueryBuilder::table('bookstore.genres', 'g')
-        ->select([
-            'g.genre_id',
-            'g.name',
-            'COUNT(bg.book_id) AS book_count'
-        ])
-        ->groupBy([
-            'g.genre_id',
-            'g.name'
-        ]);
-
-    $active ?
-        $query->innerJoin('bookstore.book_genres', 'g.genre_id', 'bg.genre_id', 'bg') :
-        $query->leftJoin('bookstore.book_genres', 'g.genre_id', 'bg.genre_id', 'bg');
-
-    $data = $db->executeAndReturnAll($query);
-
-    echo json_encode($data);
-});
-
+$router->get(
+    '/books',
+    [$bookController, 'getBooks']
+);
+$router->get(
+    '/books/{id}',
+    fn($id) => $bookController->getBookById($id)
+);
+$router->get(
+    '/genres',
+    [$genreController, 'getGenres']
+);
 $router->post(
     '/users',
-    function () {
-        $data = json_decode(file_get_contents('php://input'), true);
-
-        $password = password_hash($data['password'], PASSWORD_DEFAULT);
-
-        $db = openDB();
-        $queryBuilder = QueryBuilder::table('bookstore.users')
-            ->insert([
-                'email' => $data['email'],
-                'first_name' =>  $data['firstName'],
-                'last_name' => $data['lastName'],
-                'password' => $password
-            ]);
-
-        $json = [];
-        $json['success'] = $db->execute($queryBuilder);
-        echo json_encode($json);
-    }
+    [$userController, 'addUser']
 );
-
 $router->post(
-    '/add_book_to_cart',
+    '/cart',
     [$cartController, 'addBook']
 );
-
 $router->get(
     '/cart',
     [$cartController, 'getCart']
 );
-
 $router->delete(
     '/cart',
     [$cartController, 'removeItem']
 );
-
 $router->post(
     '/auth/login',
-    function () {
-        $data = json_decode(file_get_contents('php://input'), true);
-
-        $db = openDB();
-        $queryBuilder = QueryBuilder::table('bookstore.users')
-            ->select()
-            ->where([
-                'email' => $data['email']
-            ]);
-
-        $result = $db->executeAndReturnOne($queryBuilder);
-
-        $json = [];
-        $json['success'] = password_verify($data['password'], $result['password']);
-        echo json_encode($json);
-    }
+    [$authController, 'handleLogin']
 );
 $router->dispatch();

@@ -10,7 +10,6 @@ class CartController
     {
         $email = $_GET['email'] ?? null;
 
-
         $query = QueryBuilder::table('bookstore.books', 'b')
             ->select(
                 [
